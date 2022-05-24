@@ -13,8 +13,10 @@ Maintenance or updates unclear since only a toy project.
 Todo:
 - [ ] command line interface
 - [ ] rewrite in other languages
-- [x] custom shape inputs (CustomCanvas) (-1 fill blank) and all check in bounds for zero.
+- [x] custom shape inputs (CustomCanvas) (-1 fill blank) and all check in bounds for zero
 - [ ] color individual squares
+- [ ] split classes and functions as needed
+- [ ] assumed structure from numpy array/matrix 
 
 Developed using python v3.9.13
 Required Libraries:
