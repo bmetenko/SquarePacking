@@ -11,10 +11,10 @@ Main functionality of the code exemplified in the pySquares.ipynb.
 Maintenance or updates unclear since only a toy project.
 
 Todo:
-* command line interface
-* rewrite in other languages
-* custom shape inputs (CustomCanvas) (-1 fill blank) and all check in bounds for zero.
-* color individual squares
+[ ] command line interface
+[ ] rewrite in other languages
+[x] custom shape inputs (CustomCanvas) (-1 fill blank) and all check in bounds for zero.
+[ ] color individual squares
 
 Developed using python v3.9.13
 Required Libraries:
