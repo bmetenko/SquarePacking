@@ -1,14 +1,19 @@
 import pandas as pd
 import numpy as np
+import plotly
 import plotly.graph_objects as go
+from itertools import cycle
+
+palette = cycle(plotly.colors.qualitative.Light24)
 
 
 class Square:
 
     def __init__(self, side):
         self.side = float(side)
-        self.coordinates = [[0, 0], [0, side], [side, 0], [side,
-                                                           side]]  #  (x, y)
+        self.coordinates = [
+            [0, 0], [0, side], [side, 0], [side, side]
+            ]  #  (x, y)
 
     def __repr__(self):
         return f"Square{int(self.side)}::ctr@{self.center}"
@@ -113,7 +118,7 @@ class SquareCanvas:
     def contents(self):
         return self._contents
 
-    def generate_plotly(self, show_text=True):
+    def generate_plotly(self, show_text=True, palette=palette):
         fig = go.Figure()
 
         fig.add_trace(
@@ -139,7 +144,7 @@ class SquareCanvas:
                      x1=sq.coordinates[3][0],
                      y1=sq.coordinates[3][1],
                      line=dict(color="RoyalBlue"),
-                     fillcolor="LightSkyBlue",
+                     fillcolor=next(palette),
                      opacity=0.2))
 
         for (x, y), value in np.ndenumerate(self.frame):
@@ -152,7 +157,7 @@ class SquareCanvas:
                          y1=y + 1,
                          line=dict(color="RoyalBlue"),
                          fillcolor="black",
-                         opacity=0.2))
+                         opacity=0.5))
 
             if value == 0:
                 shape_list.append(
@@ -163,7 +168,7 @@ class SquareCanvas:
                          y1=y + 1,
                          line=dict(color="RoyalBlue"),
                          fillcolor="white",
-                         opacity=0.2))
+                         opacity=0.5))
 
         fig.update_layout(
             width=600,

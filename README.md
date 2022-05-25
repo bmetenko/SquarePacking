@@ -15,11 +15,13 @@ Todo:
 - [ ] rewrite in other languages
 - [x] custom shape inputs (CustomCanvas) (-1 fill blank) and all check in bounds for zero
 - [ ] color individual squares
-- [ ] split classes and functions as needed
-- [ ] assumed structure from numpy array/matrix 
+- [x] split classes and functions as needed
+- [x] assumed structure from numpy array/matrix 
+- [ ] (pixel) circle packing
 
 Developed using python v3.9.13
 Required Libraries:
 - Pandas 
 - Numpy
 - Plotly
+- PIL (pillow) for image input
