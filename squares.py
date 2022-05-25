@@ -1,12 +1,14 @@
-
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 
+
 class Square:
+
     def __init__(self, side):
         self.side = float(side)
-        self.coordinates = [[0, 0], [0, side], [side, 0], [side, side]]  #  (x, y)
+        self.coordinates = [[0, 0], [0, side], [side, 0], [side,
+                                                           side]]  #  (x, y)
 
     def __repr__(self):
         return f"Square{int(self.side)}::ctr@{self.center}"
@@ -44,6 +46,7 @@ class Square:
 
 
 class SquareCanvas:
+
     def __init__(self, max=None, contents=[], frame_override=None):
         self._contents = []
 
@@ -54,7 +57,7 @@ class SquareCanvas:
             self.frame = np.zeros((max, max), dtype=int)
         else:
             self.frame = frame_override
-        
+
         self.x_max = self.frame.shape[0]
         self.y_max = self.frame.shape[1]
         self.x_min = 0
@@ -110,7 +113,7 @@ class SquareCanvas:
     def contents(self):
         return self._contents
 
-    def generate_plotly(self):
+    def generate_plotly(self, show_text=True):
         fig = go.Figure()
 
         fig.add_trace(
@@ -118,54 +121,54 @@ class SquareCanvas:
                 x=self.x_list,
                 y=self.y_list,
                 text=self.center_list,
-                mode="markers+text",
+                mode="markers+text" if show_text else "markers",
                 textposition="bottom center",
                 textfont=dict(family="sans serif", size=13, color="green"),
-            )
-        )
+            ))
 
         fig.update_xaxes(range=[0, self.x_max])
         fig.update_yaxes(range=[0, self.y_max])
+
+        shape_list = []
+
         for sq in self.contents:
-            fig.add_shape(
-                type="rect",
-                x0=sq.coordinates[0][0],
-                y0=sq.coordinates[0][1],
-                x1=sq.coordinates[3][0],
-                y1=sq.coordinates[3][1],
-                line=dict(color="RoyalBlue"),
-                fillcolor="LightSkyBlue",
-                opacity=0.2
-            )
-        
-        
+            shape_list.append(
+                dict(type="rect",
+                     x0=sq.coordinates[0][0],
+                     y0=sq.coordinates[0][1],
+                     x1=sq.coordinates[3][0],
+                     y1=sq.coordinates[3][1],
+                     line=dict(color="RoyalBlue"),
+                     fillcolor="LightSkyBlue",
+                     opacity=0.2))
+
         for (x, y), value in np.ndenumerate(self.frame):
             if value == -1:
-                fig.add_shape(
-                type="rect",
-                x0=x,
-                y0=y,
-                x1=x+1,
-                y1=y+1,
-                line=dict(color="RoyalBlue"),
-                fillcolor="black",
-                opacity=0.2
-                )
+                shape_list.append(
+                    dict(type="rect",
+                         x0=x,
+                         y0=y,
+                         x1=x + 1,
+                         y1=y + 1,
+                         line=dict(color="RoyalBlue"),
+                         fillcolor="black",
+                         opacity=0.2))
+
             if value == 0:
-                fig.add_shape(
-                type="rect",
-                x0=x,
-                y0=y,
-                x1=x+1,
-                y1=y+1,
-                line=dict(color="RoyalBlue"),
-                fillcolor="white",
-                opacity=0.2
-                )
+                shape_list.append(
+                    dict(type="rect",
+                         x0=x,
+                         y0=y,
+                         x1=x + 1,
+                         y1=y + 1,
+                         line=dict(color="RoyalBlue"),
+                         fillcolor="white",
+                         opacity=0.2))
 
         fig.update_layout(
             width=600,
             height=600,
+            shapes=shape_list
         )
         fig.show()
 
