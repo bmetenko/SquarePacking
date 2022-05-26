@@ -14,7 +14,7 @@ Todo:
 - [ ] command line interface
 - [ ] rewrite in other languages
 - [x] custom shape inputs (CustomCanvas) (-1 fill blank) and all check in bounds for zero
-- [ ] color individual squares
+- [x] color individual squares
 - [x] split classes and functions as needed
 - [x] assumed structure from numpy array/matrix 
 - [ ] (pixel) circle packing
