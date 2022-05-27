@@ -15,6 +15,9 @@ class Square:
             [0, 0], [0, side], [side, 0], [side, side]
             ]  #  (x, y)
 
+        self.l = self.side
+        self.w = self.side
+
     def __repr__(self):
         return f"Square{int(self.side)}::ctr@{self.center}"
 
@@ -52,7 +55,7 @@ class Square:
 
 class SquareCanvas:
 
-    def __init__(self, max=None, contents=[], frame_override=None):
+    def __init__(self, max=None, contents=[], frame_override=None, validate=True):
         self._contents = []
 
         if max is None:
@@ -68,19 +71,24 @@ class SquareCanvas:
         self.x_min = 0
         self.y_min = 0
 
-        sorted(contents, key=lambda x: x.side, reverse=True)
+        sorted(contents, key=lambda x: x.l * x.w, reverse=True)
+
         for sq in contents:
             self.add_contents(sq)
 
-        self.check_all_filled(contents)
+        if validate:
+            self.check_all_filled(contents)
 
     def add_contents(self, sq: Square):
         for (x, y), value in np.ndenumerate(self.frame):
             if value == 0:
 
-                if x + sq.side > self.x_max:
+                l = sq.l
+                w = sq.w
+
+                if x + l > self.x_max:
                     continue
-                if y + sq.side > self.y_max:
+                if y + w > self.y_max:
                     continue
 
                 fit = check_bounds(sq, self.frame, x, y)
@@ -90,8 +98,8 @@ class SquareCanvas:
 
                 self._contents.append(sq)
                 sq.add_xy(x, y)
-                for cellx in list(range(int(sq.side))):
-                    for celly in list(range(int(sq.side))):
+                for cellx in list(range(int(l))):
+                    for celly in list(range(int(w))):
                         y0 = celly + y
                         x0 = cellx + x
 
@@ -182,11 +190,55 @@ class SquareCanvas:
 def check_bounds(sq: Square, frame: np.array, x: float, y: float):
     out = True
 
-    for cellx in list(range(int(sq.side))):
-        for celly in list(range(int(sq.side))):
+    for cellx in list(range(int(sq.l))):
+        for celly in list(range(int(sq.w))):
             y0 = celly + y
             x0 = cellx + x
 
             if int(frame[x0][y0]) != 0:
                 out = False
     return out
+
+
+class Rect:
+
+    def __init__(self, l, w):
+        self.l = float(l)
+        self.w = float(w)
+        self.coordinates = [
+            [0, 0], [0, w], [l, 0], [l, w]
+            ]  #  (x, y)
+
+    def __repr__(self):
+        return f"Rect{int(self.l)}x{self.w}::ctr@{self.center}"
+
+    @property
+    def area(self):
+        self._area = self.l * self.w
+        return self._area
+
+    @property
+    def center(self):
+        self._center = [
+            (self.coordinates[0][0] + self.coordinates[3][0]) / 2,
+            (self.coordinates[0][1] + self.coordinates[3][1]) / 2,
+        ]
+        return self._center
+
+    def add_x(self, displacement):
+        for v, _ in enumerate(self.coordinates):
+            self.coordinates[v][0] += displacement
+
+        return self.coordinates
+
+    def add_y(self, displacement):
+        for v, _ in enumerate(self.coordinates):
+            self.coordinates[v][1] += displacement
+
+        return self.coordinates
+
+    def add_xy(self, x0, y0):
+        self.add_x(x0)
+        self.add_y(y0)
+
+        return self.coordinates
