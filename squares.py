@@ -68,6 +68,7 @@ class SquareCanvas:
         self.x_min = 0
         self.y_min = 0
 
+        sorted(contents, key=lambda x: x.side, reverse=True)
         for sq in contents:
             self.add_contents(sq)
 

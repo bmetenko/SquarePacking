@@ -18,6 +18,8 @@ Todo:
 - [x] split classes and functions as needed
 - [x] assumed structure from numpy array/matrix 
 - [ ] (pixel) circle packing
+- [ ] sorting square input
+- [ ] rectangle input?
 
 Developed using python v3.9.13
 Required Libraries:
@@ -25,3 +27,5 @@ Required Libraries:
 - Numpy
 - Plotly
 - PIL (pillow) for image input
+
+R version still being built out.
