@@ -9,6 +9,7 @@ Simple OOP (class-based) implementation of packing Square instances into a Squar
 Main functionality of the code exemplified in the pySquares.ipynb. 
 
 Maintenance or updates unclear since only a toy project.
+Rotation property currently WIP.
 
 Todo:
 - [ ] command line interface
@@ -18,8 +19,10 @@ Todo:
 - [x] split classes and functions as needed
 - [x] assumed structure from numpy array/matrix 
 - [ ] (pixel) circle packing
-- [ ] sorting square input
-- [ ] rectangle input?
+- [x] sorting square input
+- [x] rectangle input
+- [ ] autopopulate (min_start)
+- [ ] Rotatable property, rotate function, xy_symmetry = False (Rect)
 
 Developed using python v3.9.13
 Required Libraries:

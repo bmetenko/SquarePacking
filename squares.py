@@ -1,3 +1,4 @@
+# noinspection PyUnresolvedReferences
 import pandas as pd
 import numpy as np
 import plotly
@@ -10,20 +11,23 @@ palette = cycle(plotly.colors.qualitative.Light24)
 class Square:
 
     def __init__(self, side):
+        self._center = None
+        self._area = None
         self.side = float(side)
         self.coordinates = [
             [0, 0], [0, side], [side, 0], [side, side]
-            ]  #  (x, y)
+        ]  # (x, y)
 
-        self.l = self.side
-        self.w = self.side
+        self.length = self.side
+        self.width = self.side
+        self.xy_symmetry = self.length != self.width
 
     def __repr__(self):
         return f"Square{int(self.side)}::ctr@{self.center}"
 
     @property
     def area(self):
-        self._area = self.side**2
+        self._area = self.side ** 2
         return self._area
 
     @property
@@ -55,23 +59,34 @@ class Square:
 
 class SquareCanvas:
 
-    def __init__(self, max=None, contents=[], frame_override=None, validate=True):
+    def __init__(
+            self,
+            max_bound=None,
+            contents=None,
+            frame_override=None,
+            validate=True,
+            rotation=True
+    ):
+        if contents is None:
+            contents = []
         self._contents = []
 
-        if max is None:
-            max = 10
+        if max_bound is None:
+            max_bound = 10
 
         if frame_override is None:
-            self.frame = np.zeros((max, max), dtype=int)
+            self.frame = np.zeros((max_bound, max_bound), dtype=int)
         else:
             self.frame = frame_override
+
+        self.rotation_allowed = rotation
 
         self.x_max = self.frame.shape[0]
         self.y_max = self.frame.shape[1]
         self.x_min = 0
         self.y_min = 0
 
-        sorted(contents, key=lambda x: x.l * x.w, reverse=True)
+        sorted(contents, key=lambda x: x.length * x.width, reverse=True)
 
         for sq in contents:
             self.add_contents(sq)
@@ -83,23 +98,32 @@ class SquareCanvas:
         for (x, y), value in np.ndenumerate(self.frame):
             if value == 0:
 
-                l = sq.l
-                w = sq.w
+                length = sq.length
+                width = sq.width
 
-                if x + l > self.x_max:
-                    continue
-                if y + w > self.y_max:
-                    continue
+                rotate = not sq.xy_symmetry and self.rotation_allowed
+                if rotate:
+                    if x + length > self.x_max and x + width > self.x_max:
+                        continue
+                    if y + width > self.y_max and y + length > self.y_max:
+                        continue
+                else:
+                    if x + length > self.x_max:
+                        continue
+                    if y + width > self.y_max:
+                        continue
 
-                fit = check_bounds(sq, self.frame, x, y)
+                fit, rotate = check_bounds(sq, self.frame, x, y, rotation=rotate)
 
                 if not fit:
                     continue
 
                 self._contents.append(sq)
                 sq.add_xy(x, y)
-                for cellx in list(range(int(l))):
-                    for celly in list(range(int(w))):
+                x_ = list(range(int(length if not rotate else width)))
+                y_ = list(range(int(width if not rotate else length)))
+                for cellx in x_:
+                    for celly in y_:
                         y0 = celly + y
                         x0 = cellx + x
 
@@ -127,7 +151,7 @@ class SquareCanvas:
     def contents(self):
         return self._contents
 
-    def generate_plotly(self, show_text=True, palette=palette):
+    def generate_plotly(self, show_text=True, use_palette=palette):
         fig = go.Figure()
 
         fig.add_trace(
@@ -153,7 +177,7 @@ class SquareCanvas:
                      x1=sq.coordinates[3][0],
                      y1=sq.coordinates[3][1],
                      line=dict(color="RoyalBlue"),
-                     fillcolor=next(palette),
+                     fillcolor=next(use_palette),
                      opacity=0.2))
 
         for (x, y), value in np.ndenumerate(self.frame):
@@ -187,34 +211,51 @@ class SquareCanvas:
         fig.show()
 
 
-def check_bounds(sq: Square, frame: np.array, x: float, y: float):
+def check_bounds(sq: Square, frame: np.array, x: float, y: float, rotation=False):
     out = True
+    rotated = False
 
-    for cellx in list(range(int(sq.l))):
-        for celly in list(range(int(sq.w))):
+    for cellx in list(range(int(sq.length))):
+        for celly in list(range(int(sq.width))):
             y0 = celly + y
             x0 = cellx + x
 
             if int(frame[x0][y0]) != 0:
                 out = False
-    return out
+
+    if rotation and out is False:
+        out = True
+        rotated = True
+        for cellx in list(range(int(sq.width))):
+            for celly in list(range(int(sq.length))):
+                y0 = celly + y
+                x0 = cellx + x
+
+                if int(frame[x0][y0]) != 0:
+                    out = False
+
+    return out, rotated
 
 
 class Rect:
 
-    def __init__(self, l, w):
-        self.l = float(l)
-        self.w = float(w)
+    def __init__(self, length, width):
+        self._center = None
+        self._area = None
+        self.length = float(length)
+        self.width = float(width)
         self.coordinates = [
-            [0, 0], [0, w], [l, 0], [l, w]
-            ]  #  (x, y)
+            [0, 0], [0, width], [length, 0], [length, width]
+        ]  # (x, y)
+
+        self.xy_symmetry = self.length != self.width
 
     def __repr__(self):
-        return f"Rect{int(self.l)}x{self.w}::ctr@{self.center}"
+        return f"Rect{int(self.length)}x{self.width}::ctr@{self.center}"
 
     @property
     def area(self):
-        self._area = self.l * self.w
+        self._area = self.length * self.width
         return self._area
 
     @property
