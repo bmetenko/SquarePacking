@@ -53,6 +53,14 @@ class Square:
 
         return self.coordinates
 
+
+def rotate_matrix(angle):
+    theta = np.radians(angle)
+    c, s = np.cos(theta), np.sin(theta)
+    r = np.array(((c, -s), (s, c)))
+    return r
+
+
 class Rect:
 
     def __init__(self, length, width):
@@ -100,9 +108,7 @@ class Rect:
 
     def rotate(self, angle=90):
 
-        theta = np.radians(angle)
-        c, s = np.cos(theta), np.sin(theta)
-        r = np.array(((c, -s), (s, c)))
+        r = rotate_matrix(angle)
 
         # Calculate rotation matrix conversion
         self.coordinates = np.round(self.coordinates @ r.T)
@@ -116,7 +122,11 @@ class Rect:
         if min_y < 0:
             self.add_y(-min_y)
 
+        # Test if this fixes placing
+        self.width, self.length = self.length, self.width
+
         return self
+
 
 class SquareCanvas:
 
@@ -155,9 +165,7 @@ class SquareCanvas:
         if validate:
             self.check_all_filled(contents)
 
-    def add_contents(self, sq: [Square, Rect]):
-        if sq is None:
-            return
+    def add_contents(self, sq):
         placed = False
         for rot in range(0, sq.rotate_times):
             if not placed:
@@ -283,4 +291,3 @@ def check_bounds(sq: Square, frame: np.array, x: float, y: float):
             if int(frame[x0][y0]) != 0:
                 out = False
     return out
-
