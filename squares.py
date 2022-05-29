@@ -256,3 +256,12 @@ class Rect:
         self.add_y(y0)
 
         return self.coordinates
+
+    def rotate(self, angle=90):
+
+        theta = np.radians(angle)
+        c, s = np.cos(theta), np.sin(theta)
+        r = np.array(((c, -s), (s, c)))
+
+        self.coordinates = np.round(self.coordinates @ r.T)
+        return self
