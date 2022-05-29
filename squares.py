@@ -17,6 +17,7 @@ class Square:
 
         self.length = self.side
         self.width = self.side
+        self.rotate_times = 1
 
     def __repr__(self):
         return f"Square{int(self.side)}::ctr@{self.center}"
@@ -52,6 +53,70 @@ class Square:
 
         return self.coordinates
 
+class Rect:
+
+    def __init__(self, length, width):
+        self._area = None
+        self._center = None
+        self.length = float(length)
+        self.width = float(width)
+        self.coordinates = [
+            [0, 0], [0, width], [length, 0], [length, width]
+        ]  # (x, y)
+
+    def __repr__(self):
+        return f"Rect{int(self.length)}x{self.width}::ctr@{self.center}"
+
+    @property
+    def area(self):
+        self._area = self.length * self.width
+        return self._area
+
+    @property
+    def center(self):
+        self._center = [
+            (self.coordinates[0][0] + self.coordinates[3][0]) / 2,
+            (self.coordinates[0][1] + self.coordinates[3][1]) / 2,
+            ]
+        return self._center
+
+    def add_x(self, displacement):
+        for v, _ in enumerate(self.coordinates):
+            self.coordinates[v][0] += displacement
+
+        return self.coordinates
+
+    def add_y(self, displacement):
+        for v, _ in enumerate(self.coordinates):
+            self.coordinates[v][1] += displacement
+
+        return self.coordinates
+
+    def add_xy(self, x0, y0):
+        self.add_x(x0)
+        self.add_y(y0)
+
+        return self.coordinates
+
+    def rotate(self, angle=90):
+
+        theta = np.radians(angle)
+        c, s = np.cos(theta), np.sin(theta)
+        r = np.array(((c, -s), (s, c)))
+
+        # Calculate rotation matrix conversion
+        self.coordinates = np.round(self.coordinates @ r.T)
+
+        # Recentering on 0,0 for x and y
+        min_x = np.round(min(np.hsplit(self.coordinates, 2)[0]))
+        min_y = np.round(min(np.hsplit(self.coordinates, 2)[1]))
+
+        if min_x < 0:
+            self.add_x(-min_x)
+        if min_y < 0:
+            self.add_y(-min_y)
+
+        return self
 
 class SquareCanvas:
 
@@ -60,7 +125,8 @@ class SquareCanvas:
             max_bound=None,
             contents=None,
             frame_override=None,
-            validate=True
+            validate=True,
+            allow_rotation=False
     ):
         if contents is None:
             contents = []
@@ -81,6 +147,7 @@ class SquareCanvas:
         self.y_min = 0
 
         sorted(contents, key=lambda x: x.length * x.width, reverse=True)
+        self.rotation = allow_rotation
 
         for sq in contents:
             self.add_contents(sq)
@@ -88,33 +155,39 @@ class SquareCanvas:
         if validate:
             self.check_all_filled(contents)
 
-    def add_contents(self, sq: Square):
-        for (x, y), value in np.ndenumerate(self.frame):
-            if value == 0:
+    def add_contents(self, sq: [Square, Rect]):
+        if sq is None:
+            return
+        placed = False
+        for rot in range(0, sq.rotate_times):
+            if not placed:
+                sq = sq.rotate(90*rot) if isinstance(sq, Rect) else sq
+                for (x, y), value in np.ndenumerate(self.frame):
+                    if value == 0:
 
-                length = sq.length
-                width = sq.width
+                        length = sq.length
+                        width = sq.width
 
-                if x + length > self.x_max:
-                    continue
-                if y + width > self.y_max:
-                    continue
+                        if x + length > self.x_max or x + length < 0:
+                            continue
+                        if y + width > self.y_max or y + width < 0:
+                            continue
 
-                fit = check_bounds(sq, self.frame, x, y)
+                        fit = check_bounds(sq, self.frame, x, y)
 
-                if not fit:
-                    continue
+                        if not fit:
+                            continue
 
-                self._contents.append(sq)
-                sq.add_xy(x, y)
-                for cellx in list(range(int(length))):
-                    for celly in list(range(int(width))):
-                        y0 = celly + y
-                        x0 = cellx + x
+                        self._contents.append(sq)
+                        sq.add_xy(x, y)
+                        for cellx in list(range(int(length))):
+                            for celly in list(range(int(width))):
+                                y0 = celly + y
+                                x0 = cellx + x
 
-                        self.frame[x0][y0] = int(len(self._contents))
+                                self.frame[x0][y0] = int(len(self._contents))
 
-                break
+                        placed = True
 
     def check_all_filled(self, contents):
         if np.amax(self.frame) != int(len(contents)):
@@ -211,68 +284,3 @@ def check_bounds(sq: Square, frame: np.array, x: float, y: float):
                 out = False
     return out
 
-
-class Rect:
-
-    def __init__(self, length, width):
-        self._area = None
-        self._center = None
-        self.length = float(length)
-        self.width = float(width)
-        self.coordinates = [
-            [0, 0], [0, width], [length, 0], [length, width]
-        ]  # (x, y)
-
-    def __repr__(self):
-        return f"Rect{int(self.length)}x{self.width}::ctr@{self.center}"
-
-    @property
-    def area(self):
-        self._area = self.length * self.width
-        return self._area
-
-    @property
-    def center(self):
-        self._center = [
-            (self.coordinates[0][0] + self.coordinates[3][0]) / 2,
-            (self.coordinates[0][1] + self.coordinates[3][1]) / 2,
-            ]
-        return self._center
-
-    def add_x(self, displacement):
-        for v, _ in enumerate(self.coordinates):
-            self.coordinates[v][0] += displacement
-
-        return self.coordinates
-
-    def add_y(self, displacement):
-        for v, _ in enumerate(self.coordinates):
-            self.coordinates[v][1] += displacement
-
-        return self.coordinates
-
-    def add_xy(self, x0, y0):
-        self.add_x(x0)
-        self.add_y(y0)
-
-        return self.coordinates
-
-    def rotate(self, angle=90):
-
-        theta = np.radians(angle)
-        c, s = np.cos(theta), np.sin(theta)
-        r = np.array(((c, -s), (s, c)))
-
-        # Calculate rotation matrix conversion
-        self.coordinates = np.round(self.coordinates @ r.T)
-
-        # Recentering on 0,0 for x and y
-        min_x = np.round(min(np.hsplit(self.coordinates, 2)[0]))
-        min_y = np.round(min(np.hsplit(self.coordinates, 2)[1]))
-
-        if min_x < 0:
-            self.add_x(-min_x)
-        if min_y < 0:
-            self.add_y(-min_y)
-
-        return self
