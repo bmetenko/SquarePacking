@@ -263,5 +263,16 @@ class Rect:
         c, s = np.cos(theta), np.sin(theta)
         r = np.array(((c, -s), (s, c)))
 
+        # Calculate rotation matrix conversion
         self.coordinates = np.round(self.coordinates @ r.T)
+
+        # Recentering on 0,0 for x and y
+        min_x = np.round(min(np.hsplit(self.coordinates, 2)[0]))
+        min_y = np.round(min(np.hsplit(self.coordinates, 2)[1]))
+
+        if min_x < 0:
+            self.add_x(-min_x)
+        if min_y < 0:
+            self.add_y(-min_y)
+
         return self
