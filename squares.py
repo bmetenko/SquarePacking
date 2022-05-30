@@ -124,8 +124,16 @@ class Rect:
         if min_y < 0:
             self.add_y(-min_y)
 
-        # Test if this fixes placing
-        self.width, self.length = self.length, self.width
+        # Fixes placing
+        l, w = self.length, self.width
+        self.width, self.length = l, w
+
+        self.coordinates = [
+            self.coordinates[1],
+            self.coordinates[3],
+            self.coordinates[0],
+            self.coordinates[2]
+        ]
 
         return self
 
@@ -173,18 +181,18 @@ class SquareCanvas:
         for rot in list(range(0, max_rotate)):
             if not placed:
                 sq = sq.rotate(90*rot) if isinstance(sq, Rect) else sq
+                length = sq.width
+                width = sq.length
+
                 for (x, y), value in np.ndenumerate(self.frame):
                     if value == 0 and not placed:
-
-                        length = sq.length
-                        width = sq.width
 
                         if x + length > self.x_max or x + length < 0:
                             continue
                         if y + width > self.y_max or y + width < 0:
                             continue
 
-                        fit = check_bounds(sq, self.frame, x, y)
+                        fit = check_bounds(sq, self.frame, x, y, length, width)
 
                         if not fit:
                             continue
@@ -199,12 +207,11 @@ class SquareCanvas:
 
                                 self.frame[x0][y0] = int(len(self._contents))
             
-            if not placed:
-               raise IndexError("Not all placed...") 
+        if not placed:
+            raise IndexError("Not all placed...")
 
     def check_all_filled(self, contents):
         if np.amax(self.frame) != int(len(contents)):
-            print(np.amax(self.frame), int(len(contents)))
             raise IndexError("Not all placed...")
 
     @property
@@ -286,11 +293,11 @@ class SquareCanvas:
         fig.show()
 
 
-def check_bounds(sq: Square, frame: np.array, x: float, y: float):
+def check_bounds(sq: Square, frame: np.array, x: float, y: float, length, width):
     out = True
 
-    for cellx in list(range(int(sq.length))):
-        for celly in list(range(int(sq.width))):
+    for cellx in list(range(int(length))):
+        for celly in list(range(int(width))):
             y0 = celly + y
             x0 = cellx + x
 
