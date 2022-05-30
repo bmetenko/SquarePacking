@@ -53,6 +53,14 @@ class Square:
 
         return self.coordinates
 
+
+def rotate_matrix(angle):
+    theta = np.radians(angle)
+    c, s = np.cos(theta), np.sin(theta)
+    r = np.array(((c, -s), (s, c)))
+    return r
+
+
 class Rect:
 
     def __init__(self, length, width):
@@ -102,11 +110,31 @@ class Rect:
 
     def rotate(self, angle=90):
 
-        theta = np.radians(angle)
-        c, s = np.cos(theta), np.sin(theta)
-        r = np.array(((c, -s), (s, c)))
+        r = rotate_matrix(angle)
 
+        # Calculate rotation matrix conversion
         self.coordinates = np.round(self.coordinates @ r.T)
+
+        # Recentering on 0,0 for x and y
+        min_x = np.round(min(np.hsplit(self.coordinates, 2)[0]))
+        min_y = np.round(min(np.hsplit(self.coordinates, 2)[1]))
+
+        if min_x < 0:
+            self.add_x(-min_x)
+        if min_y < 0:
+            self.add_y(-min_y)
+
+        # Fixes placing
+        l, w = self.length, self.width
+        self.width, self.length = l, w
+
+        self.coordinates = [
+            self.coordinates[1],
+            self.coordinates[3],
+            self.coordinates[0],
+            self.coordinates[2]
+        ]
+
         return self
 
 
@@ -147,29 +175,29 @@ class SquareCanvas:
         if validate:
             self.check_all_filled(contents)
 
-    def add_contents(self, sq: [Square, Rect]):
-        if sq is None:
-            return
+    def add_contents(self, sq):
         placed = False
-        for rot in range(0, sq.rotate_times):
+        max_rotate = sq.rotate_times if self.rotation else 1
+        for rot in list(range(0, max_rotate)):
             if not placed:
                 sq = sq.rotate(90*rot) if isinstance(sq, Rect) else sq
-                for (x, y), value in np.ndenumerate(self.frame):
-                    if value == 0:
+                length = sq.width
+                width = sq.length
 
-                        length = sq.length
-                        width = sq.width
+                for (x, y), value in np.ndenumerate(self.frame):
+                    if value == 0 and not placed:
 
                         if x + length > self.x_max or x + length < 0:
                             continue
                         if y + width > self.y_max or y + width < 0:
                             continue
 
-                        fit = check_bounds(sq, self.frame, x, y)
+                        fit = check_bounds(sq, self.frame, x, y, length, width)
 
                         if not fit:
                             continue
 
+                        placed = True
                         self._contents.append(sq)
                         sq.add_xy(x, y)
                         for cellx in list(range(int(length))):
@@ -178,8 +206,9 @@ class SquareCanvas:
                                 x0 = cellx + x
 
                                 self.frame[x0][y0] = int(len(self._contents))
-
-                        placed = True
+            
+        if not placed:
+            raise IndexError("Not all placed...")
 
     def check_all_filled(self, contents):
         if np.amax(self.frame) != int(len(contents)):
@@ -264,15 +293,14 @@ class SquareCanvas:
         fig.show()
 
 
-def check_bounds(sq: Square, frame: np.array, x: float, y: float):
+def check_bounds(sq: Square, frame: np.array, x: float, y: float, length, width):
     out = True
 
-    for cellx in list(range(int(sq.length))):
-        for celly in list(range(int(sq.width))):
+    for cellx in list(range(int(length))):
+        for celly in list(range(int(width))):
             y0 = celly + y
             x0 = cellx + x
 
             if int(frame[x0][y0]) != 0:
                 out = False
     return out
-
