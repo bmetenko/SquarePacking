@@ -72,6 +72,8 @@ class Rect:
             [0, 0], [0, width], [length, 0], [length, width]
         ]  # (x, y)
 
+        self.rotate_times = 4
+
     def __repr__(self):
         return f"Rect{int(self.length)}x{self.width}::ctr@{self.center}"
 
@@ -167,11 +169,12 @@ class SquareCanvas:
 
     def add_contents(self, sq):
         placed = False
-        for rot in range(0, sq.rotate_times):
+        max_rotate = sq.rotate_times if self.rotation else 1
+        for rot in list(range(0, max_rotate)):
             if not placed:
                 sq = sq.rotate(90*rot) if isinstance(sq, Rect) else sq
                 for (x, y), value in np.ndenumerate(self.frame):
-                    if value == 0:
+                    if value == 0 and not placed:
 
                         length = sq.length
                         width = sq.width
@@ -186,6 +189,7 @@ class SquareCanvas:
                         if not fit:
                             continue
 
+                        placed = True
                         self._contents.append(sq)
                         sq.add_xy(x, y)
                         for cellx in list(range(int(length))):
@@ -194,11 +198,13 @@ class SquareCanvas:
                                 x0 = cellx + x
 
                                 self.frame[x0][y0] = int(len(self._contents))
-
-                        placed = True
+            
+            if not placed:
+               raise IndexError("Not all placed...") 
 
     def check_all_filled(self, contents):
         if np.amax(self.frame) != int(len(contents)):
+            print(np.amax(self.frame), int(len(contents)))
             raise IndexError("Not all placed...")
 
     @property
