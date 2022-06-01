@@ -181,7 +181,7 @@ class SquareCanvas:
         for rot in list(range(0, max_rotate)):
             if not placed:
                 sq = sq.rotate(90*rot) if isinstance(sq, Rect) else sq
-                length = sq.width
+                length = sq.width  # swap arbitrary since handled elsewhere
                 width = sq.length
 
                 for (x, y), value in np.ndenumerate(self.frame):
