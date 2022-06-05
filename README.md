@@ -11,6 +11,13 @@ Main functionality of the code exemplified in the pySquares.ipynb.
 Maintenance or updates unclear since only a toy project.
 Rotation property currently WIP.
 
+Current command-line example:
+```console
+$ python3 square_cli.py -s "1 2 3 4 3" -f 7 -a true
+$ echo "Expanded arguments of above:"
+$ python3 square_cli.py --square_list "1 2 3 4 3" --fill_canvas_size 7 --array_display true
+```
+
 Todo:
 - [ ] command line interface
 - [ ] rewrite in other languages
