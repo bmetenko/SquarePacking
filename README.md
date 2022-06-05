@@ -12,8 +12,16 @@ Rotation property currently WIP.
 Current command-line example:
 ```console
 $ python3 square_cli.py -s "1 2 3 4 3" -f 7 -a true
+
 $ echo "Expanded arguments of above:"
 $ python3 square_cli.py --square_list "1 2 3 4 3" --fill_canvas_size 7 --array_display true
+```
+
+```console
+$ python3 square_cli.py -s "1 2 3 4 3" -r "[3x2]*4" -f 9 -a true
+
+$ echo "Expanded arguments of above:"
+$ python3 square_cli.py --square_list "1 2 3 4 3" --rect_list "[3x2]*4" --fill_canvas_size 9 --array_display true
 ```
 
 Todo:

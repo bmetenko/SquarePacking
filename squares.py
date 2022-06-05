@@ -75,7 +75,7 @@ class Rect:
         self.rotate_times = 4
 
     def __repr__(self):
-        return f"Rect{int(self.length)}x{self.width}::ctr@{self.center}"
+        return f"Rect{int(self.length)}x{int(self.width)}::ctr@{self.center}"
 
     @property
     def area(self):
