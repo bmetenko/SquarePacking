@@ -230,7 +230,13 @@ class SquareCanvas:
     def contents(self):
         return self._contents
 
-    def generate_plotly(self, show_text=True, palette=None, render="svg"):
+    def generate_plotly(
+        self, 
+        show_text=True, 
+        palette=None, 
+        render="svg",
+        out_file=None 
+        ):
         if palette is None:
             palette = cycle(plotly.colors.qualitative.Light24)
 
@@ -290,7 +296,10 @@ class SquareCanvas:
             height=600,
             shapes=shape_list
         )
-        fig.show(renderer=render)
+        if out_file is None:
+            fig.show(renderer=render)
+        else:
+            fig.write_image(out_file)
 
 
 def check_bounds(sq: Square, frame: np.array, x: float, y: float, length, width):

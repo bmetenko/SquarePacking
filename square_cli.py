@@ -27,6 +27,13 @@ parser.add_argument(
     help="Display plotly plot in browser. Overrides array display."
 )
 
+parser.add_argument(
+    "-o", "--output_file",
+    default=None,
+    help="Send output to specified filepath."
+    "Image type inferred by extension type."
+    "Overrides array display and plot display."
+)
 
 def count_expand(expand_dict:  List[Dict[str, int]]):
     out_list = []
@@ -74,7 +81,11 @@ def main():
         if args.plot_display is not None:
             args.array_display = "false"
 
-            canvas.generate_plotly(render=args.plot_display)
+            if args.output_file is None:
+                canvas.generate_plotly(render=args.plot_display)
+
+            else:
+                canvas.generate_plotly(out_file=args.output_file)
     
         if args.array_display.lower() not in ["f", "false", "none"]:
             print(canvas.contents)

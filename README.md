@@ -34,6 +34,7 @@ Todo:
 - [x] sorting square input
 - [x] rectangle input
 - [x] rotatable property, rotate function (Rect-specific)
+- [x] CLI based preview of output
 - [ ] polish above implementations
 - [ ] (pixel) circle packing
 - [ ] autopopulate (min_start)
@@ -49,6 +50,7 @@ Required Libraries:
 - Numpy
 - Plotly
 - PIL (pillow) (for image input)
+- kaliedo (static file export from plotly calls)
 
 CLI version:
 - Currently only supporting square canvas filling minimal example.
