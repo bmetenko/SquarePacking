@@ -21,6 +21,12 @@ parser.add_argument(
     help="Show numpy array structure after computation completes."
 )
 
+parser.add_argument(
+    "-p", "--plot_display",
+    default="browser",
+    help="Display plotly plot in browser. Overrides array display."
+)
+
 
 def count_expand(expand_dict:  List[Dict[str, int]]):
     out_list = []
@@ -64,10 +70,16 @@ def main():
         
     if args.canvas_size is not None:
         canvas = SquareCanvas(max_bound=int(args.canvas_size), contents=list_shapes)
+
+        if args.plot_display is not None:
+            args.array_display = "false"
+
+            canvas.generate_plotly(render=args.plot_display)
     
         if args.array_display.lower() not in ["f", "false", "none"]:
             print(canvas.contents)
             print(canvas.frame)
+
 
 
 if __name__ == "__main__":
