@@ -23,6 +23,27 @@ $ python3 square_cli.py -s "1 2 3 4 3" -r "[3x2]*4" -f 9 -a true
 $ echo "Expanded arguments of above:"
 $ python3 square_cli.py --square_list "1 2 3 4 3" --rect_list "[3x2]*4" --fill_canvas_size 9 --array_display true
 ```
+```
+usage: square_cli.py [-h] [-s SQUARE_LIST] [-r RECT_LIST] [-f CANVAS_SIZE] [-a ARRAY_DISPLAY]
+                     [-p PLOT_DISPLAY] [-o OUTPUT_FILE]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s SQUARE_LIST, --square_list SQUARE_LIST
+                        Specify square radius list to populate.
+  -r RECT_LIST, --rect_list RECT_LIST
+                        Specify rectangles ( ex. '[1x3]*3, [4x3]*2' ) list to populate.
+  -f CANVAS_SIZE, --fill_canvas_size CANVAS_SIZE
+                        Specify canvas size to fill supllied square_list with.
+  -a ARRAY_DISPLAY, --array_display ARRAY_DISPLAY
+                        Show numpy array structure after computation completes.
+  -p PLOT_DISPLAY, --plot_display PLOT_DISPLAY
+                        Display plotly plot in browser. Overrides array display.
+  -o OUTPUT_FILE, --output_file OUTPUT_FILE
+                        Send output to specified filepath.Image type inferred by extension
+                        type.Overrides array display and plot display.
+```
+
 
 Todo:
 - [x] command line interface
@@ -60,3 +81,4 @@ R version:
 
 ![R](https://img.shields.io/badge/r-%23276DC3.svg?style=for-the-badge&logo=r&logoColor=white) 
 - Currently only supporting squares
+- Less feature-rich than python implementation
