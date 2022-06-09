@@ -25,7 +25,7 @@ $ python3 square_cli.py --square_list "1 2 3 4 3" --rect_list "[3x2]*4" --fill_c
 ```
 ```
 usage: square_cli.py [-h] [-s SQUARE_LIST] [-r RECT_LIST] [-f CANVAS_SIZE] [-a ARRAY_DISPLAY]
-                     [-p PLOT_DISPLAY] [-o OUTPUT_FILE]
+                     [-p PLOT_DISPLAY] [-i0 IMAGE_ZERO] [-o OUTPUT_FILE]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -39,6 +39,9 @@ optional arguments:
                         Show numpy array structure after computation completes.
   -p PLOT_DISPLAY, --plot_display PLOT_DISPLAY
                         Display plotly plot in browser. Overrides array display.
+  -i0 IMAGE_ZERO, --input_image_zero IMAGE_ZERO
+                        Input based on image parsing, where pure white is a placable 'tile', and any
+                        other color is blocked. Overrides canvas_size.
   -o OUTPUT_FILE, --output_file OUTPUT_FILE
                         Send output to specified filepath.Image type inferred by extension
                         type.Overrides array display and plot display.

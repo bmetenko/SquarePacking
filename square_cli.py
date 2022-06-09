@@ -1,6 +1,9 @@
 from argparse import ArgumentParser
 from typing import List, Dict
 
+import numpy as np
+import PIL.Image
+
 from squares import Rect, Square, SquareCanvas
 
 parser = ArgumentParser()
@@ -25,6 +28,15 @@ parser.add_argument(
     "-p", "--plot_display",
     default="browser",
     help="Display plotly plot in browser. Overrides array display."
+)
+
+parser.add_argument(
+    "-i0", "--input_image_zero",
+    dest='image_zero',
+    default=None,
+    help=\
+    "Input based on image parsing, where pure white is a placable 'tile', "
+    "and any other color is blocked. Overrides canvas_size."
 )
 
 parser.add_argument(
@@ -78,6 +90,18 @@ def main():
     if args.canvas_size is not None:
         canvas = SquareCanvas(max_bound=int(args.canvas_size), contents=list_shapes)
 
+    if args.image_zero is not None:
+        I = np.asarray(PIL.Image.open(args.image_zero)).astype(int)
+
+        # transform black and white
+        where_not0 = np.where(I != 0)
+        where_0 = np.where(I == 0)
+
+        I[where_0] = 0
+        I[where_not0] = -1
+        canvas = SquareCanvas(frame_override=I, contents=list_shapes)
+
+    if "canvas" in locals():
         if args.plot_display is not None:
             args.array_display = "false"
 
@@ -86,7 +110,7 @@ def main():
 
             else:
                 canvas.generate_plotly(out_file=args.output_file)
-    
+
         if args.array_display.lower() not in ["f", "false", "none"]:
             print(canvas.contents)
             print(canvas.frame)
