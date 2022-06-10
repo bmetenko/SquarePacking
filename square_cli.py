@@ -40,6 +40,15 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "-ia", "--input_image_average",
+    dest="image_average",
+    default=None,
+    help=\
+    "Input based on image parsing, images averaged into 0s and 1s and used to fill 'tiles'. "
+    "Overrides canvas_size, and input_image_zero"
+)
+
+parser.add_argument(
     "-o", "--output_file",
     default=None,
     help="Send output to specified filepath."
@@ -99,7 +108,15 @@ def main():
 
         I[where_0] = 0
         I[where_not0] = -1
-        canvas = SquareCanvas(frame_override=I, contents=list_shapes)
+
+    if args.image_average is not None:
+        img = PIL.Image.open(args.image_average)
+        thresh = np.asarray(img).astype(int).mean(axis=0).mean()
+        fn = lambda x : 255 if x > thresh else 0
+        img = img.convert('L').point(fn, mode='1')
+        I = np.asarray(img).astype(int)
+        
+    canvas = SquareCanvas(frame_override=I, contents=list_shapes)
 
     if "canvas" in locals():
         if args.plot_display is not None:
