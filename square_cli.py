@@ -56,6 +56,14 @@ parser.add_argument(
     "Overrides array display and plot display."
 )
 
+parser.add_argument(
+    "-dp", "--display_points",
+    dest="display_points",
+    default=True,
+    help=\
+    "Toggle display of point values in ouput."
+)
+
 def count_expand(expand_dict:  List[Dict[str, int]]):
     out_list = []
 
@@ -117,16 +125,17 @@ def main():
         I = np.asarray(img).astype(int)
         
     canvas = SquareCanvas(frame_override=I, contents=list_shapes)
+    display_text = args.display_points.lower() not in ["f", "false", "none"]
 
     if "canvas" in locals():
         if args.plot_display is not None:
             args.array_display = "false"
 
             if args.output_file is None:
-                canvas.generate_plotly(render=args.plot_display)
+                canvas.generate_plotly(render=args.plot_display, show_text=display_text)
 
             else:
-                canvas.generate_plotly(out_file=args.output_file)
+                canvas.generate_plotly(out_file=args.output_file, show_text=display_text)
 
         if args.array_display.lower() not in ["f", "false", "none"]:
             print(canvas.contents)
