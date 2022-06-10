@@ -7,7 +7,8 @@ Simple OOP (class-based) implementation of packing Square instances into a Squar
 Main functionality of the code exemplified in the pySquares.ipynb. 
 
 Maintenance or updates unclear since only a toy project.
-Rotation property currently WIP.
+
+Please note that loading and processing of larger images will take time.
 
 Current command-line example:
 ```console
@@ -22,10 +23,14 @@ $ python3 square_cli.py -s "1 2 3 4 3" -r "[3x2]*4" -f 9 -a true
 
 $ echo "Expanded arguments of above:"
 $ python3 square_cli.py --square_list "1 2 3 4 3" --rect_list "[3x2]*4" --fill_canvas_size 9 --array_display true
+
+$ python3 square_cli.py -s "1 2 3 4 3" -r "[3x2]*500" -ia ./grass.png -a true -dp none
 ```
+
 ```
 usage: square_cli.py [-h] [-s SQUARE_LIST] [-r RECT_LIST] [-f CANVAS_SIZE] [-a ARRAY_DISPLAY]
-                     [-p PLOT_DISPLAY] [-i0 IMAGE_ZERO] [-o OUTPUT_FILE]
+                     [-p PLOT_DISPLAY] [-i0 IMAGE_ZERO] [-ia IMAGE_AVERAGE] [-o OUTPUT_FILE]
+                     [-dp DISPLAY_POINTS]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -42,9 +47,14 @@ optional arguments:
   -i0 IMAGE_ZERO, --input_image_zero IMAGE_ZERO
                         Input based on image parsing, where pure white is a placable 'tile', and any
                         other color is blocked. Overrides canvas_size.
+  -ia IMAGE_AVERAGE, --input_image_average IMAGE_AVERAGE
+                        Input based on image parsing, images averaged into 0s and 1s and used to fill
+                        'tiles'. Overrides canvas_size, and input_image_zero
   -o OUTPUT_FILE, --output_file OUTPUT_FILE
                         Send output to specified filepath.Image type inferred by extension
                         type.Overrides array display and plot display.
+  -dp DISPLAY_POINTS, --display_points DISPLAY_POINTS
+                        Toggle display of point values in ouput.
 ```
 
 
@@ -61,7 +71,7 @@ Todo:
 - [x] CLI based preview of output
 - [ ] polish above implementations
 - [ ] (pixel) circle packing
-- [ ] autopopulate (min_start)
+- [ ] auto-populate (min_start)
 
 ---
 
