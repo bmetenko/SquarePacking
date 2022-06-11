@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from typing import List, Dict
 
 import numpy as np
+import PIL
 import PIL.Image
 
 from squares import Rect, Square, SquareCanvas
@@ -46,6 +47,14 @@ parser.add_argument(
     help=\
     "Input based on image parsing, images averaged into 0s and 1s and used to fill 'tiles'. "
     "Overrides canvas_size, and input_image_zero"
+)
+
+parser.add_argument(
+    "-ir", "--image_rotate",
+    dest="image_rotate",
+    default=0,
+    help=\
+    "Rotates provided image by specified degrees, if present, before population."
 )
 
 parser.add_argument(
@@ -122,6 +131,10 @@ def main():
         thresh = np.asarray(img).astype(int).mean(axis=0).mean()
         fn = lambda x : 255 if x > thresh else 0
         img = img.convert('L').point(fn, mode='1')
+        I = np.asarray(img).astype(int)
+    
+    if "img" in locals():
+        img = img.rotate(int(args.image_rotate), expand=True)
         I = np.asarray(img).astype(int)
         
     canvas = SquareCanvas(frame_override=I, contents=list_shapes)
