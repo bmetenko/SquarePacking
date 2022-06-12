@@ -68,7 +68,7 @@ parser.add_argument(
 parser.add_argument(
     "-dp", "--display_points",
     dest="display_points",
-    default=True,
+    action='store_true',
     help=\
     "Toggle display of point values in ouput."
 )
@@ -79,6 +79,15 @@ parser.add_argument(
     action='store_true',
     help='toggle to dissallow rotation of rectangles when adding to SquareCanvas.'
     )
+
+parser.add_argument(
+    "-ar", "--autopopulate_rectangles_max_side",
+    dest="rect_max_side",
+    default=None,
+    help=\
+    "Specify autopopulation of remaining canvas "
+    "with rectangles starting with maximum sides supplied."
+)
 
 def count_expand(expand_dict:  List[Dict[str, int]]):
     out_list = []
@@ -143,19 +152,25 @@ def main():
         fn = lambda x : 255 if x > thresh else 0
         img = img.convert('L').point(fn, mode='1')
         I = np.asarray(img).astype(int)
-    
+
     if "img" in locals():
         img = img.rotate(int(args.image_rotate), expand=True)
         I = np.asarray(img).astype(int)
+        I = I * -1 if np.amax(I) == 1 else I
         
     canvas = SquareCanvas(
         frame_override=I,
         contents=list_shapes,
         allow_rotation=(not args.disallow_rotation)
         )
-    display_text = args.display_points.lower() not in ["f", "false", "none"]
+
+    display_text = args.display_points
 
     if "canvas" in locals():
+
+        if args.rect_max_side is not None:
+            canvas.autofill(max_side=int(args.rect_max_side), square_only=False)
+
         if args.plot_display is not None:
             args.array_display = "false"
 

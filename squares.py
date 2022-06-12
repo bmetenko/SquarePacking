@@ -256,7 +256,10 @@ class SquareCanvas:
 
 
     def check_all_filled(self, contents):
-        if np.amax(self.frame) != int(len(contents)):
+        max_frame = np.amax(self.frame)
+        max_contents = int(len(contents))
+        if max_frame != max_contents:
+            print(f"{max_frame=}, {max_contents=}")
             raise IndexError("Not all placed...")
 
     @property
@@ -337,11 +340,18 @@ class SquareCanvas:
                          opacity=0.5))
 
         fig.update_layout(
-            width=600,
-            height=600,
             shapes=shape_list
         )
+        
         if out_file is None:
+            if render == "browser":
+                fig.update_layout(autosize=True)
+            else:
+                fig.update_layout(
+                    width=600,
+                    height=600
+                )
+
             fig.show(renderer=render)
         else:
             fig.write_image(out_file)
