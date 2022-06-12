@@ -86,7 +86,17 @@ parser.add_argument(
     default=None,
     help=\
     "Specify autopopulation of remaining canvas "
-    "with rectangles starting with maximum sides supplied."
+    "with rectangles starting with maximum sides supplied. "
+    "Overrides square population using -as argument."
+)
+
+parser.add_argument(
+    "-as", "--autopopulate_squares_max_side",
+    dest="square_max_side",
+    default=None,
+    help=\
+    "Specify autopopulation of remaining canvas "
+    "with squares starting with maximum sides supplied. "
 )
 
 def count_expand(expand_dict:  List[Dict[str, int]]):
@@ -170,6 +180,10 @@ def main():
 
         if args.rect_max_side is not None:
             canvas.autofill(max_side=int(args.rect_max_side), square_only=False)
+        
+        if args.square_max_side is not None:
+            canvas.autofill(max_side=int(args.square_max_side), square_only=True)
+
 
         if args.plot_display is not None:
             args.array_display = "false"
