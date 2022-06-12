@@ -66,21 +66,6 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-dp", "--display_points",
-    dest="display_points",
-    action='store_true',
-    help=\
-    "Toggle display of point values in ouput."
-)
-
-parser.add_argument(
-    '-dr', '--disallow_rotation', 
-    dest="disallow_rotation",
-    action='store_true',
-    help='toggle to dissallow rotation of rectangles when adding to SquareCanvas.'
-    )
-
-parser.add_argument(
     "-ar", "--autopopulate_rectangles_max_side",
     dest="rect_max_side",
     default=None,
@@ -110,6 +95,21 @@ def count_expand(expand_dict:  List[Dict[str, int]]):
             )
 
     return out_list
+
+parser.add_argument(
+    "-dp", "--display_points",
+    dest="display_points",
+    action='store_true',
+    help=\
+    "Toggle display of point values in ouput."
+)
+
+parser.add_argument(
+    '-dr', '--disallow_rotation', 
+    dest="disallow_rotation",
+    action='store_true',
+    help='toggle to dissallow rotation of rectangles when adding to SquareCanvas.'
+    )
 
 
 def main():

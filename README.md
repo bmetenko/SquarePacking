@@ -29,8 +29,8 @@ $ python3 square_cli.py -s "1 2 3 4 3" -r "[3x2]*500" -ia ./grass.png -a true -d
 
 ```
 usage: square_cli.py [-h] [-s SQUARE_LIST] [-r RECT_LIST] [-f CANVAS_SIZE] [-a ARRAY_DISPLAY]
-                     [-p PLOT_DISPLAY] [-i0 IMAGE_ZERO] [-ia IMAGE_AVERAGE] [-o OUTPUT_FILE]
-                     [-dp DISPLAY_POINTS]
+                     [-p PLOT_DISPLAY] [-i0 IMAGE_ZERO] [-ia IMAGE_AVERAGE] [-ir IMAGE_ROTATE]
+                     [-o OUTPUT_FILE] [-ar RECT_MAX_SIDE] [-as SQUARE_MAX_SIDE] [-dp] [-dr]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -45,16 +45,21 @@ optional arguments:
   -p PLOT_DISPLAY, --plot_display PLOT_DISPLAY
                         Display plotly plot in browser. Overrides array display.
   -i0 IMAGE_ZERO, --input_image_zero IMAGE_ZERO
-                        Input based on image parsing, where pure white is a placable 'tile', and any
-                        other color is blocked. Overrides canvas_size.
+                        Input based on image parsing, where pure white is a placable 'tile', and any other color is blocked. Overrides canvas_size.
   -ia IMAGE_AVERAGE, --input_image_average IMAGE_AVERAGE
-                        Input based on image parsing, images averaged into 0s and 1s and used to fill
-                        'tiles'. Overrides canvas_size, and input_image_zero
+                        Input based on image parsing, images averaged into 0s and 1s and used to fill 'tiles'. Overrides canvas_size, and input_image_zero
+  -ir IMAGE_ROTATE, --image_rotate IMAGE_ROTATE
+                        Rotates provided image by specified degrees, if present, before population.
   -o OUTPUT_FILE, --output_file OUTPUT_FILE
-                        Send output to specified filepath.Image type inferred by extension
-                        type.Overrides array display and plot display.
-  -dp DISPLAY_POINTS, --display_points DISPLAY_POINTS
+                        Send output to specified filepath.Image type inferred by extension type.Overrides array display and plot display.
+  -ar RECT_MAX_SIDE, --autopopulate_rectangles_max_side RECT_MAX_SIDE
+                        Specify autopopulation of remaining canvas with rectangles starting with maximum sides supplied. Overrides square population using -as argument.
+  -as SQUARE_MAX_SIDE, --autopopulate_squares_max_side SQUARE_MAX_SIDE
+                        Specify autopopulation of remaining canvas with squares starting with maximum sides supplied.
+  -dp, --display_points
                         Toggle display of point values in ouput.
+  -dr, --disallow_rotation
+                        toggle to dissallow rotation of rectangles when adding to SquareCanvas.
 ```
 
 
