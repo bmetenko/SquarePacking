@@ -146,7 +146,7 @@ class SquareCanvas:
             contents=None,
             frame_override=None,
             validate=True,
-            allow_rotation=False
+            allow_rotation=True
     ):
         if contents is None:
             contents = []
@@ -209,6 +209,51 @@ class SquareCanvas:
             
         if not placed:
             raise IndexError("Not all placed...")
+
+    def autofill(self, max_side, square_only=False):
+        fill_size = max_side
+
+        if square_only:
+            while True:
+
+                sq = Square(side=fill_size)
+
+                try:
+                    self.add_contents(sq)
+                except IndexError:
+                    fill_size = fill_size - 1
+
+                if fill_size == 0:
+                    break
+        else:
+            x_side, y_side = \
+                max_side, max_side
+
+            while True:
+
+                rec = Rect(x_side, y_side)
+
+                try:
+                    self.add_contents(rec)
+                except IndexError:
+                    rotated = False
+
+                    if self.rotation:
+                        try:
+                            self.add_contents(rec.rotate())
+                            rotated = True
+                        except IndexError:
+                            pass
+
+                    if not rotated:
+                        if x_side == y_side:
+                            x_side -= 1
+                        else:
+                            y_side -= 1
+
+                if x_side == 0:
+                    break
+
 
     def check_all_filled(self, contents):
         if np.amax(self.frame) != int(len(contents)):
