@@ -73,6 +73,13 @@ parser.add_argument(
     "Toggle display of point values in ouput."
 )
 
+parser.add_argument(
+    '-dr', '--disallow_rotation', 
+    dest="disallow_rotation",
+    action='store_true',
+    help='toggle to dissallow rotation of rectangles when adding to SquareCanvas.'
+    )
+
 def count_expand(expand_dict:  List[Dict[str, int]]):
     out_list = []
 
@@ -114,7 +121,11 @@ def main():
         ]
         
     if args.canvas_size is not None:
-        canvas = SquareCanvas(max_bound=int(args.canvas_size), contents=list_shapes)
+        canvas = SquareCanvas(
+            max_bound=int(args.canvas_size), 
+            contents=list_shapes,
+            allow_rotation=(not args.disallow_rotation)
+            )
 
     if args.image_zero is not None:
         I = np.asarray(PIL.Image.open(args.image_zero)).astype(int)
@@ -137,7 +148,11 @@ def main():
         img = img.rotate(int(args.image_rotate), expand=True)
         I = np.asarray(img).astype(int)
         
-    canvas = SquareCanvas(frame_override=I, contents=list_shapes)
+    canvas = SquareCanvas(
+        frame_override=I,
+        contents=list_shapes,
+        allow_rotation=(not args.disallow_rotation)
+        )
     display_text = args.display_points.lower() not in ["f", "false", "none"]
 
     if "canvas" in locals():
