@@ -254,7 +254,6 @@ class SquareCanvas:
                 if x_side == 0:
                     break
 
-
     def check_all_filled(self, contents):
         max_frame = np.amax(self.frame)
         max_contents = int(len(contents))
@@ -284,7 +283,7 @@ class SquareCanvas:
         palette=None, 
         render="svg",
         out_file=None 
-        ):
+            ):
         if palette is None:
             palette = cycle(plotly.colors.qualitative.Light24)
 
@@ -357,6 +356,7 @@ class SquareCanvas:
             fig.write_image(out_file)
 
 
+# noinspection PyUnusedLocal
 def check_bounds(sq: Square, frame: np.array, x: float, y: float, length, width):
     out = True
 
