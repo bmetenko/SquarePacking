@@ -91,7 +91,14 @@ parser.add_argument(
     "-dp", "--display_points",
     dest="display_points",
     action='store_true',
-    help="Toggle display of point values in ouput."
+    help="Toggle display of center point values in ouput."
+)
+
+parser.add_argument(
+    "-dpp", "--display_path_points",
+    dest="display_path_points",
+    action='store_true',
+    help="Toggle display of element addition path."
 )
 
 parser.add_argument(
@@ -169,6 +176,7 @@ def main():
     )
 
     display_text = args.display_points
+    display_path = args.display_path_points
 
     if "canvas" in locals():
 
@@ -182,10 +190,18 @@ def main():
             args.array_display = "false"
 
             if args.output_file is None:
-                canvas.generate_plotly(render=args.plot_display, show_text=display_text)
+                canvas.generate_plotly(
+                    render=args.plot_display, 
+                    show_text=display_text,
+                    trace_path=display_path
+                    )
 
             else:
-                canvas.generate_plotly(out_file=args.output_file, show_text=display_text)
+                canvas.generate_plotly(
+                    out_file=args.output_file, 
+                    show_text=display_text,
+                    trace_path=display_path
+                    )
 
         if args.array_display.lower() not in ["f", "false", "none"]:
             print(canvas.contents)
