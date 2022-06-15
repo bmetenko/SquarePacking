@@ -282,19 +282,24 @@ class SquareCanvas:
         show_text=True, 
         palette=None, 
         render="svg",
-        out_file=None 
+        out_file=None,
+        trace_path=False
             ):
         if palette is None:
             palette = cycle(plotly.colors.qualitative.Light24)
 
         fig = go.Figure()
+        
+        scatter_mode = "markers"
+        scatter_mode += "+text" if show_text else ''
+        scatter_mode += "+lines" if trace_path else ''
 
         fig.add_trace(
             go.Scatter(
                 x=self.x_list,
                 y=self.y_list,
                 text=self.center_list,
-                mode="markers+text" if show_text else "markers",
+                mode=scatter_mode,
                 textposition="bottom center",
                 textfont=dict(family="sans serif", size=13, color="green"),
             ))
