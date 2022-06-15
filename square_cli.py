@@ -169,11 +169,12 @@ def main():
         image = image * -1 if np.amax(image) == 1 else image
 
     # noinspection PyUnboundLocalVariable
-    canvas = SquareCanvas(
-        frame_override=image if "image" in locals() else None,
-        contents=list_shapes,
-        allow_rotation=(not args.disallow_rotation)
-    )
+    if "image" in locals():
+        canvas = SquareCanvas(
+            frame_override=image,
+            contents=list_shapes,
+            allow_rotation=(not args.disallow_rotation)
+        )
 
     display_text = args.display_points
     display_path = args.display_path_points
