@@ -1,13 +1,14 @@
+from itertools import cycle
+from typing import List, Dict, Union
 import pandas as pd
 import numpy as np
 import plotly
 import plotly.graph_objects as go
-from itertools import cycle
 
 
 class Square:
 
-    def __init__(self, side):
+    def __init__(self, side: int):
         self._center = None
         self._area = None
         self.side = float(side)
@@ -35,26 +36,26 @@ class Square:
             ]
         return self._center
 
-    def add_x(self, displacement):
+    def add_x(self, displacement: int):
         for v, _ in enumerate(self.coordinates):
             self.coordinates[v][0] += displacement
 
         return self.coordinates
 
-    def add_y(self, displacement):
+    def add_y(self, displacement: int):
         for v, _ in enumerate(self.coordinates):
             self.coordinates[v][1] += displacement
 
         return self.coordinates
 
-    def add_xy(self, x0, y0):
+    def add_xy(self, x0: int, y0: int):
         self.add_x(x0)
         self.add_y(y0)
 
         return self.coordinates
 
 
-def rotate_matrix(angle):
+def rotate_matrix(angle: Union[int, float]):
     theta = np.radians(angle)
     c, s = np.cos(theta), np.sin(theta)
     r = np.array(((c, -s), (s, c)))
@@ -63,7 +64,7 @@ def rotate_matrix(angle):
 
 class Rect:
 
-    def __init__(self, length, width):
+    def __init__(self, length: int, width: int):
         self._area = None
         self._center = None
         self.length = float(length)
@@ -90,25 +91,25 @@ class Rect:
             ]
         return self._center
 
-    def add_x(self, displacement):
+    def add_x(self, displacement: int):
         for v, _ in enumerate(self.coordinates):
             self.coordinates[v][0] += displacement
 
         return self.coordinates
 
-    def add_y(self, displacement):
+    def add_y(self, displacement: int):
         for v, _ in enumerate(self.coordinates):
             self.coordinates[v][1] += displacement
 
         return self.coordinates
 
-    def add_xy(self, x0, y0):
+    def add_xy(self, x0: int, y0: int):
         self.add_x(x0)
         self.add_y(y0)
 
         return self.coordinates
 
-    def rotate(self, angle=90):
+    def rotate(self, angle: Union[int, float] = 90):
 
         r = rotate_matrix(angle)
 
@@ -142,11 +143,11 @@ class SquareCanvas:
 
     def __init__(
             self,
-            max_bound=None,
-            contents=None,
-            frame_override=None,
-            validate=True,
-            allow_rotation=True
+            max_bound: int = None,
+            contents: List[Union[Square, Rect]] = None,
+            frame_override: np.ndarray = None,
+            validate: bool = True,
+            allow_rotation: bool = True
     ):
         if contents is None:
             contents = []
@@ -175,7 +176,7 @@ class SquareCanvas:
         if validate:
             self.check_all_filled(contents)
 
-    def add_contents(self, sq):
+    def add_contents(self, sq: Union[Square, Rect]):
         placed = False
         max_rotate = sq.rotate_times if self.rotation else 1
         for rot in list(range(0, max_rotate)):
@@ -210,7 +211,7 @@ class SquareCanvas:
         if not placed:
             raise IndexError("Not all placed...")
 
-    def autofill(self, max_side, square_only=False):
+    def autofill(self, max_side: int, square_only: bool = False):
         fill_size = max_side
 
         if square_only:
@@ -254,7 +255,7 @@ class SquareCanvas:
                 if x_side == 0:
                     break
 
-    def check_all_filled(self, contents):
+    def check_all_filled(self, contents: List[Union[Square, Rect]]):
         max_frame = np.amax(self.frame)
         max_contents = int(len(contents))
         if max_frame != max_contents:
@@ -279,11 +280,11 @@ class SquareCanvas:
 
     def generate_plotly(
         self, 
-        show_text=True, 
-        palette=None, 
-        render="svg",
-        out_file=None,
-        trace_path=False
+        show_text: bool = True,
+        palette: List = None,
+        render: str = "svg",
+        out_file: str = None,
+        trace_path: bool = False
             ):
         if palette is None:
             palette = cycle(plotly.colors.qualitative.Light24)
@@ -362,7 +363,14 @@ class SquareCanvas:
 
 
 # noinspection PyUnusedLocal
-def check_bounds(sq: Square, frame: np.array, x: float, y: float, length, width):
+def check_bounds(
+        sq: Square,
+        frame: np.array,
+        x: float,
+        y: float,
+        length: Union[int, float],
+        width: Union[int, float]
+):
     out = True
 
     for cellx in list(range(int(length))):
