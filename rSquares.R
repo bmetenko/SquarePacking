@@ -246,3 +246,63 @@ square_canvas <- R6Class(
         }
     )
 )
+
+rectangle <- R6Class(
+    "Rectangle",
+    public = list(
+        area = NULL,
+        center = NULL,
+        length = NULL,
+        width = NULL,
+        coordinates = NULL,
+        rotate_times = NULL,
+        initialize = function(l, w){
+            stopifnot(is.numeric(l), length(l) == 1)
+            stopifnot(is.numeric(w), length(w) == 1)
+            self$length <- l
+            self$width <- w
+            self$area <- l * w
+            self$coordinates <- self$calc_coordinates()
+            self$center <- self$calc_center()
+        },
+        calc_coordinates = function() {
+            points <- list()
+            points$p1 <- list(x = 0, y = 0)
+            points$p2 <- list(x = 0, y = self$width)
+            points$p3 <- list(x = self$length, y = 0)
+            points$p4 <- list(x = self$length, y = self$width)
+            points
+        },
+        calc_center = function() {
+            point <- list(
+                x = (self$coordinates$p1$x + self$coordinates$p4$x) / 2,
+                y = (self$coordinates$p1$y + self$coordinates$p4$y) / 2
+            )
+            point
+        },
+        add_x = function(x0) {
+            for (i in 1:length(self$coordinates)) {
+                self$coordinates[[i]][[1]] <- (
+                    self$coordinates[[i]][[1]] + x0
+                )
+            }
+            self$center <- self$calc_center()
+            self
+        },
+        add_y = function(y0) {
+            for (i in 1:length(self$coordinates)) {
+                self$coordinates[[i]][[2]] <- (
+                    self$coordinates[[i]][[2]] + y0
+                )
+            }
+            self$center <- self$calc_center()
+            self
+        },
+        add_xy = function(x0, y0) {
+            self$center <- self$add_x(x0)
+            self$center <- self$add_y(y0)
+            self$center <- self$calc_center()
+            self
+        }
+    )
+)
