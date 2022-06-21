@@ -7,6 +7,9 @@ import plotly.graph_objects as go
 
 
 class Square:
+    __slots__ = (
+        '_center', '_area', "side", "coordinates", "length", "width", "rotate_times"
+        )
 
     def __init__(self, side: int):
         self._center = None
@@ -63,6 +66,10 @@ def rotate_matrix(angle: Union[int, float]):
 
 
 class Rect:
+
+    __slots__ = (
+        "_area", "_center", "length", "width", "coordinates", "rotate_times"
+        )
 
     def __init__(self, length: int, width: int):
         self._area = None

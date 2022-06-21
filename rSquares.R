@@ -142,7 +142,9 @@ square_canvas <- R6Class(
                                     !((y + width - 1) > self$y_max) &
                                     !((y + width) < 0)
                             ) {
-                                fit <- check_bounds(sq, self$frame, x, y, len, width)
+                                fit <- check_bounds(
+                                    sq, self$frame, x, y, len, width
+                                    )
 
                                 if (fit) {
                                     self$contents <- c(self$contents, sq)
@@ -152,7 +154,9 @@ square_canvas <- R6Class(
                                         for (celly in 1:width) {
                                             y0 <- celly + y - 1
                                             x0 <- cellx + x - 1
-                                            self$frame[x0, y0] <- length(self$contents)
+                                            self$frame[x0, y0] <- length(
+                                                self$contents
+                                                )
                                         }
                                     }
                                 }
@@ -258,7 +262,7 @@ rectangle <- R6Class(
         width = NULL,
         coordinates = NULL,
         rotate_times = NULL,
-        initialize = function(l, w){
+        initialize = function(l, w) {
             stopifnot(is.numeric(l), length(l) == 1)
             stopifnot(is.numeric(w), length(w) == 1)
             self$length <- l
