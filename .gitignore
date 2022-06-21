@@ -7,3 +7,5 @@ launch.json
 .DS_Store
 *.html
 *.ipynb
+.Rproj.user
+SquarePacking.Rproj

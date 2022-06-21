@@ -137,8 +137,10 @@ square_canvas <- R6Class(
                             if (
                                 (!placed) &
                                     (self$frame[x, y] == 0) &
-                                    !(((x + len - 1) > self$x_max) & ((x + len) > 0)) &
-                                    !(((y + width - 1) > self$y_max) & ((y + width < 0)))
+                                    !((x + len - 1) > self$x_max) &
+                                    !(((x + len) < 0)) &
+                                    !((y + width - 1) > self$y_max) &
+                                    !((y + width) < 0)
                             ) {
                                 fit <- check_bounds(sq, self$frame, x, y, len, width)
 

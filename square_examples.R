@@ -31,3 +31,16 @@ print(a_square$generate_ggplot())
 
 print(b_square$frame)
 print(b_square$generate_ggplot())
+
+
+c_square <- square_canvas$new(
+  contents = mapply(
+    rectangle$new,
+    c(1, 2, 3, 4, 5),
+    c(2, 4, 3, 1, 3)
+  ),
+  max_bound = 14
+)
+
+print(c_square$frame)
+print(c_square$generate_ggplot())
