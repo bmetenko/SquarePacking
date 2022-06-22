@@ -127,8 +127,8 @@ square_canvas <- R6Class(
             max_rotate <- ifelse(self$rotation, sq$rotate_times, 1)
             for (rot in 1:max_rotate) {
                 if (!placed) {
-                    if ((class(square$new(6)) != "Square")[1]) {
-                        sq$rotate(90 * rot)
+                    if ((class(sq) != "Square")[1]) {
+                        sq$rotate(90 * (rot - 1))
                     }
                     len <- sq$width
                     width <- sq$length
@@ -143,8 +143,14 @@ square_canvas <- R6Class(
                                     !((y + width) < 0)
                             ) {
                                 fit <- check_bounds(
-                                    sq, self$frame, x, y, len, width
+                                    sq, 
+                                    self$frame, 
+                                    ifelse((class(sq) != "Square")[1], y, x), 
+                                    ifelse((class(sq) != "Square")[1], x, y),
+                                    len, 
+                                    width
                                     )
+                                # browser()
 
                                 if (fit) {
                                     self$contents <- c(self$contents, sq)
@@ -270,6 +276,7 @@ rectangle <- R6Class(
             self$area <- l * w
             self$coordinates <- self$calc_coordinates()
             self$center <- self$calc_center()
+            self$rotate_times <- 4
         },
         calc_coordinates = function() {
             points <- list()
@@ -309,6 +316,11 @@ rectangle <- R6Class(
             self$center <- self$add_y(y0)
             self$center <- self$calc_center()
             self
+        },
+        rotate = function(degrees){
+          if (degrees == 0) {
+            self
+          } 
         }
     )
 )
