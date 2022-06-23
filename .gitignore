@@ -9,3 +9,5 @@ launch.json
 *.ipynb
 .Rproj.user
 SquarePacking.Rproj
+.Rhistory
+.RData
