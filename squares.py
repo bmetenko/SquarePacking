@@ -1,3 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#----------------
+# Created By  : bmetenko
+# Project Start Date: 22May2022
+# version = '1.0'
+# ---------------
+
+"""
+Implementation and visualization logic for 
+packing squares or rectangles on a square canvas.
+"""
+
 from itertools import cycle
 from typing import List, Dict, Union
 import pandas as pd

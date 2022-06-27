@@ -1,3 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#----------------
+# Created By  : bmetenko
+# Project Start Date: 22May2022
+# version = '1.0'
+# ---------------
+
+"""
+CLI interface for squares.py 
+specified classes and visualizations.
+"""
+
 from argparse import ArgumentParser
 from typing import List, Dict
 
