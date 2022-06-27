@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #----------------
-# Created By  : bmetenko
-# Project Start Date: 22May2022
-# version = '1.0'
+# Created By : bmetenko
+# Start Date : 22May2022
+# Project URL: https://github.com/bmetenko/SquarePacking
 # ---------------
+
 
 """
 CLI interface for squares.py 
