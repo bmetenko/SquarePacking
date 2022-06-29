@@ -33,9 +33,23 @@ class TestRect(unittest.TestCase):
         self.assertEqual(s1.area, 6)
         self.assertEqual(s1.center, [1.0, 1.5])
 
-        s1 = Rect(length=1, width=1)
-        self.assertEqual(s1.area, 1)   
+        s1 = Rect(length=4, width=7)
+        self.assertEqual(s1.area, 28)   
         self.assertEqual(s1.center, [2.0, 3.5])
+
+    def test_rotation(self):
+        s1 = Rect(4, 7)
+        s1.rotate(90)
+        self.assertEqual(s1.center, [3.5, 2.0])
+        self.assertEqual(
+            [p.tolist() for p in s1.coordinates], 
+            [
+                [0.0, 0.0], 
+                [0.0, 4.0], 
+                [7.0, 0.0], 
+                [7.0, 4.0]
+            ]
+        )
 
 if __name__ == '__main__':
     unittest.main()
