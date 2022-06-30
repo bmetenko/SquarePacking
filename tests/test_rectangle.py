@@ -51,5 +51,18 @@ class TestRect(unittest.TestCase):
             ]
         )
 
+        s1.rotate(90)
+        self.assertEqual(s1.center, [2.0, 3.5])
+        self.assertEqual(
+            [p.tolist() for p in s1.coordinates], 
+            [
+                [4.0, 0.0], 
+                [0.0, 0.0], 
+                [4.0, 7.0], 
+                [0.0, 7.0]
+            ]
+        )
+        
+
 if __name__ == '__main__':
     unittest.main()
