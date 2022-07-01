@@ -8,7 +8,7 @@
 
 
 """
-CLI interface for squares.py 
+CLI interface for squares.py
 specified classes and visualizations.
 """
 
@@ -22,6 +22,7 @@ import PIL.Image
 from squares import Rect, Square, SquareCanvas
 
 parser = ArgumentParser()
+
 parser.add_argument(
     "-s", "--square_list", dest="square_list",
     help="Specify square radius list to populate."
@@ -88,7 +89,9 @@ parser.add_argument(
 )
 
 
-def count_expand(expand_dict: List[Dict[str, int]]):
+def count_expand(
+    expand_dict: List[Dict[str, int]]
+    ) -> List[Dict[str, int]]:
     out_list = []
 
     for element in expand_dict:
@@ -101,6 +104,7 @@ def count_expand(expand_dict: List[Dict[str, int]]):
     return out_list
 
 
+#region Boolean Options
 parser.add_argument(
     "-dp", "--display_points",
     dest="display_points",
@@ -121,7 +125,7 @@ parser.add_argument(
     action='store_true',
     help='toggle to dissallow rotation of rectangles when adding to SquareCanvas.'
 )
-
+# endregion
 
 # noinspection PyTypeChecker
 def main():
@@ -206,14 +210,14 @@ def main():
 
             if args.output_file is None:
                 canvas.generate_plotly(
-                    render=args.plot_display, 
+                    render=args.plot_display,
                     show_text=display_text,
                     trace_path=display_path
                     )
 
             else:
                 canvas.generate_plotly(
-                    out_file=args.output_file, 
+                    out_file=args.output_file,
                     show_text=display_text,
                     trace_path=display_path
                     )
@@ -224,4 +228,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
