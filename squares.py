@@ -15,9 +15,6 @@ from itertools import cycle
 from typing import List, Dict, Union
 import pandas as pd
 import numpy as np
-import plotly
-import plotly.graph_objects as go
-
 
 class Square:
     __slots__ = (
@@ -306,6 +303,10 @@ class SquareCanvas:
         out_file: str = None,
         trace_path: bool = False
             ):
+        
+        import plotly
+        import plotly.graph_objects as go
+
         if palette is None:
             palette = cycle(plotly.colors.qualitative.Light24)
 
