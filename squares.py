@@ -257,14 +257,20 @@ class SquareCanvas:
         out_df["area"] = [sq.area for sq in self._contents]
         out_df["length"] = [sq.length for sq in self._contents]
         out_df["width"] = [sq.width for sq in self._contents] 
-
+        
+        # region extra payload column logic
         extra_properties = [sq.extra for sq in self._contents]
         extra_properties_list = {k for i in extra_properties for k in i.keys()}
 
         for prop in extra_properties_list:
             out_df[prop] = [
-                sq[prop] if prop in sq.keys() else np.nan for sq in self._contents 
+                    sq.extra[prop] 
+                    if prop in sq.extra.keys() 
+                    else np.nan 
+                    for sq in self._contents 
                 ]
+
+        # endregion
 
         return out_df
 
