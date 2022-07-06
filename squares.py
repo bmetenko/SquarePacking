@@ -12,16 +12,22 @@ packing squares or rectangles on a square canvas.
 """
 
 from itertools import cycle
-from typing import List, Dict, Union
+from typing import List, Dict, Optional, Union
 import pandas as pd
 import numpy as np
 
 class Square:
     __slots__ = (
-        '_center', '_area', "side", "coordinates", "length", "width", "rotate_times"
+        '_center', '_area', "side", 
+        "coordinates", "length", "width", "rotate_times",
+        "extra"
         )
 
-    def __init__(self, side: int):
+    def __init__(
+        self, 
+        side: int, 
+        extra: Dict = {}
+        ):
         self._center = None
         self._area = None
         self.side = float(side)
@@ -32,6 +38,8 @@ class Square:
         self.length = self.side
         self.width = self.side
         self.rotate_times = 1
+
+        self.extra = extra
 
     def __repr__(self):
         return f"Square{int(self.side)}::ctr@{self.center}"
@@ -78,10 +86,18 @@ def rotate_matrix(angle: Union[int, float]):
 class Rect:
 
     __slots__ = (
-        "_area", "_center", "length", "width", "coordinates", "rotate_times"
+        "_area", "_center", "length",
+        "width", "coordinates", "rotate_times",
+        "extra"
         )
 
-    def __init__(self, length: int, width: int):
+    def __init__(
+        self, 
+        length: int, 
+        width: int, 
+        extra = {}
+        ):
+
         self._area = None
         self._center = None
         self.length = float(length)
@@ -91,6 +107,9 @@ class Rect:
         ]  # (x, y)
 
         self.rotate_times = 4
+
+        self.extra = extra
+
 
     def __repr__(self):
         return f"Rect{int(self.length)}x{int(self.width)}::ctr@{self.center}"
@@ -227,6 +246,27 @@ class SquareCanvas:
             
         if not placed:
             raise IndexError("Not all placed...")
+    
+    def contents_frame(self):
+        out_df = pd.DataFrame()
+
+        out_df["def"] = [str(sq) for sq in self._contents] 
+        out_df["x_start"] = self.x_list
+        out_df["y_start"] = self.y_list
+        out_df["center"] = self.center_list
+        out_df["area"] = [sq.area for sq in self._contents]
+        out_df["length"] = [sq.length for sq in self._contents]
+        out_df["width"] = [sq.width for sq in self._contents] 
+
+        extra_properties = [sq.extra for sq in self._contents]
+        extra_properties_list = {k for i in extra_properties for k in i.keys()}
+
+        for prop in extra_properties_list:
+            out_df[prop] = [
+                sq[prop] if prop in sq.keys() else np.nan for sq in self._contents 
+                ]
+
+        return out_df
 
     def autofill(self, max_side: int, square_only: bool = False):
         fill_size = max_side
