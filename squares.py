@@ -45,38 +45,38 @@ class Square:
         return f"Square{int(self.side)}::ctr@{self.center}"
 
     @property
-    def area(self):
+    def area(self) -> float:
         self._area = self.side ** 2
         return self._area
 
     @property
-    def center(self):
+    def center(self) -> List[float]:
         self._center = [
             (self.coordinates[0][0] + self.coordinates[3][0]) / 2,
             (self.coordinates[0][1] + self.coordinates[3][1]) / 2,
             ]
         return self._center
 
-    def add_x(self, displacement: int):
+    def add_x(self, displacement: int) -> List[List]:
         for v, _ in enumerate(self.coordinates):
             self.coordinates[v][0] += displacement
 
         return self.coordinates
 
-    def add_y(self, displacement: int):
+    def add_y(self, displacement: int) -> List[List]:
         for v, _ in enumerate(self.coordinates):
             self.coordinates[v][1] += displacement
 
         return self.coordinates
 
-    def add_xy(self, x0: int, y0: int):
+    def add_xy(self, x0: int, y0: int) -> List[List]:
         self.add_x(x0)
         self.add_y(y0)
 
         return self.coordinates
 
 
-def rotate_matrix(angle: Union[int, float]):
+def rotate_matrix(angle: Union[int, float]) -> np.array:
     theta = np.radians(angle)
     c, s = np.cos(theta), np.sin(theta)
     r = np.array(((c, -s), (s, c)))
@@ -115,31 +115,31 @@ class Rect:
         return f"Rect{int(self.length)}x{int(self.width)}::ctr@{self.center}"
 
     @property
-    def area(self):
+    def area(self) -> float:
         self._area = self.length * self.width
         return self._area
 
     @property
-    def center(self):
+    def center(self) -> List[float]:
         self._center = [
             (self.coordinates[0][0] + self.coordinates[3][0]) / 2,
             (self.coordinates[0][1] + self.coordinates[3][1]) / 2,
             ]
         return self._center
 
-    def add_x(self, displacement: int):
+    def add_x(self, displacement: int) -> List[List]:
         for v, _ in enumerate(self.coordinates):
             self.coordinates[v][0] += displacement
 
         return self.coordinates
 
-    def add_y(self, displacement: int):
+    def add_y(self, displacement: int) -> List[List]:
         for v, _ in enumerate(self.coordinates):
             self.coordinates[v][1] += displacement
 
         return self.coordinates
 
-    def add_xy(self, x0: int, y0: int):
+    def add_xy(self, x0: int, y0: int) -> List[List]:
         self.add_x(x0)
         self.add_y(y0)
 
@@ -246,8 +246,10 @@ class SquareCanvas:
             
         if not placed:
             raise IndexError("Not all placed...")
+
+        return self
     
-    def contents_frame(self):
+    def contents_frame(self) -> pd.DataFrame:
         out_df = pd.DataFrame()
 
         out_df["def"] = [str(sq) for sq in self._contents] 
@@ -318,7 +320,9 @@ class SquareCanvas:
                 if x_side == 0:
                     break
 
-    def check_all_filled(self, contents: List[Union[Square, Rect]]):
+        return self
+
+    def check_all_filled(self, contents: List[Union[Square, Rect]]) -> None:
         max_frame = np.amax(self.frame)
         max_contents = int(len(contents))
         if max_frame != max_contents:
@@ -326,15 +330,15 @@ class SquareCanvas:
             raise IndexError("Not all placed...")
 
     @property
-    def x_list(self):
+    def x_list(self) -> List[float]:
         return [i.center[0] for i in self.contents]
 
     @property
-    def y_list(self):
+    def y_list(self) -> List[float]:
         return [i.center[1] for i in self.contents]
 
     @property
-    def center_list(self):
+    def center_list(self) -> List[List]:
         return [str(i.center) for i in self.contents]
 
     @property
@@ -348,7 +352,7 @@ class SquareCanvas:
         render: str = "svg",
         out_file: str = None,
         trace_path: bool = False
-            ):
+            ) -> None:
         
         import plotly
         import plotly.graph_objects as go
@@ -437,7 +441,7 @@ def check_bounds(
         y: float,
         length: Union[int, float],
         width: Union[int, float]
-):
+) -> bool:
     out = True
 
     for cellx in list(range(int(length))):
