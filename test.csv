@@ -1,0 +1,4 @@
+object,side,length,width,metadata
+sq,2,,,first object
+rect,,3,4,second object
+rect,,5,6,third object
