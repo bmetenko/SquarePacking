@@ -237,7 +237,7 @@ def main():
             canvas.autofill(max_side=int(args.square_max_side), square_only=True)
 
         if args.plot_display is not None:
-            args.array_display = "false"
+            args.array_display = False
 
             if args.output_file is None:
                 canvas.generate_plotly(
@@ -253,7 +253,7 @@ def main():
                     trace_path=display_path
                     )
 
-        if args.array_display.lower() not in ["f", "false", "none"]:
+        if bool(args.array_display):
             print(canvas.contents)
             print(canvas.frame)
 
