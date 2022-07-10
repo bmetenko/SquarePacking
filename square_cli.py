@@ -12,10 +12,11 @@ CLI interface for squares.py
 specified classes and visualizations.
 """
 
-from argparse import ArgumentParser
+from argparse import ArgumentError, ArgumentParser
 from typing import List, Dict
 
 import numpy as np
+import pandas as pd
 import PIL
 import PIL.Image
 
@@ -88,6 +89,12 @@ parser.add_argument(
          "with squares starting with maximum sides supplied. "
 )
 
+parser.add_argument(
+    "-ic", "--input_csv", dest="input_csv", default=None,
+    help="Specify csv to use with length, and width columns. " +
+    "Others will be treated as extra payload."
+)
+
 
 def count_expand(
     expand_dict: List[Dict[str, int]]
@@ -133,6 +140,26 @@ def main():
     print(args)
 
     list_shapes = []
+
+    if args.input_csv is not None:
+        df = pd.read_csv(args.input_csv)
+
+        if "length" not in df.columns:
+            raise IndexError("Please supply csv with length column.")
+        
+        if "width" not in df.columns:
+            raise IndexError("Please supply csv with width column.")
+
+        for idx, row in df.iterrows():
+            extra = pd.DataFrame(row).T.drop(
+                columns=["length", "width"]
+                ).to_dict("records")[0]
+
+            list_shapes += [Rect(length=row.length, width=row.width, extra=extra)]
+
+        if args.canvas_size is None:
+            raise ArgumentError("Please supply at least a canvas size for csv population.")
+    
 
     if args.square_list is not None:
         list_square_radii = [int(i) for i in args.square_list.replace(",", "").split(" ")]

@@ -1,4 +1,4 @@
-object,side,length,width,metadata
-sq,2,,,first object
-rect,,3,4,second object
-rect,,5,6,third object
+length,width,metadata
+2,2,first object
+3,4,second object
+5,6,third object
