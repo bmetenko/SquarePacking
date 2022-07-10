@@ -1,0 +1,4 @@
+def,x_start,y_start,center,area,length,width,metadata
+"Rect2x2::ctr@[1.0, 1.0]",1.0,1.0,"[1.0, 1.0]",4.0,2.0,2.0,first object
+"Rect4x3::ctr@[1.5, 4.0]",1.5,4.0,"[1.5, 4.0]",12.0,4.0,3.0,second object
+"Rect6x5::ctr@[5.5, 3.0]",5.5,3.0,"[5.5, 3.0]",30.0,6.0,5.0,third object

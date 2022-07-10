@@ -95,6 +95,10 @@ parser.add_argument(
     "Others will be treated as extra payload."
 )
 
+parser.add_argument(
+    "-oc", "--output_csv", dest="output_csv", default=None,
+    help="Specify csv to populate with the specified information about plot."
+)
 
 def count_expand(
     expand_dict: List[Dict[str, int]]
@@ -252,6 +256,9 @@ def main():
         if args.array_display.lower() not in ["f", "false", "none"]:
             print(canvas.contents)
             print(canvas.frame)
+
+        if bool(args.output_csv):
+            canvas.contents_frame().to_csv(args.output_csv, index=False)
 
 
 if __name__ == "__main__":
