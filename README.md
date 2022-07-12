@@ -24,13 +24,14 @@ $ python3 square_cli.py -s "1 2 3 4 3" -r "[3x2]*4" -f 9 -a true
 $ echo "Expanded arguments of above:"
 $ python3 square_cli.py --square_list "1 2 3 4 3" --rect_list "[3x2]*4" --fill_canvas_size 9 --array_display true
 
-$ python3 square_cli.py -s "1 2 3 4 3" -r "[3x2]*500" -ia ./grass.png -a true -dp none
+$ python3 square_cli.py -s "1 2 3 4 3" -r "[3x2]*500" -ia ./grass.png -a true -dp
 ```
 
 ```
 usage: square_cli.py [-h] [-s SQUARE_LIST] [-r RECT_LIST] [-f CANVAS_SIZE] [-a ARRAY_DISPLAY]
                      [-p PLOT_DISPLAY] [-i0 IMAGE_ZERO] [-ia IMAGE_AVERAGE] [-ir IMAGE_ROTATE]
-                     [-o OUTPUT_FILE] [-ar RECT_MAX_SIDE] [-as SQUARE_MAX_SIDE] [-dp] [-dpp] [-dr]
+                     [-o OUTPUT_FILE] [-ar RECT_MAX_SIDE] [-as SQUARE_MAX_SIDE] [-ic INPUT_CSV]
+                     [-oc OUTPUT_CSV] [-dp] [-dpp] [-dr]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -61,6 +62,11 @@ optional arguments:
   -as SQUARE_MAX_SIDE, --autopopulate_squares_max_side SQUARE_MAX_SIDE
                         Specify autopopulation of remaining canvas with squares starting with maximum
                         sides supplied.
+  -ic INPUT_CSV, --input_csv INPUT_CSV
+                        Specify csv to use with length, and width columns. Others will be treated as
+                        extra payload.
+  -oc OUTPUT_CSV, --output_csv OUTPUT_CSV
+                        Specify csv to populate with the specified information about plot.
   -dp, --display_points
                         Toggle display of center point values in ouput.
   -dpp, --display_path_points
