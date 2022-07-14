@@ -5,7 +5,7 @@ __pycache__
 launch.json
 .idea/
 .DS_Store
-*.html
+pySquares.html
 *.ipynb
 .Rproj.user
 SquarePacking.Rproj
