@@ -419,7 +419,8 @@ class SquareCanvas:
             shapes=shape_list
         )
         
-        if out_file is None:
+        if out_file is None \
+            and render != "object":
             if render == "browser":
                 fig.update_layout(autosize=True)
             else:
@@ -430,7 +431,12 @@ class SquareCanvas:
 
             fig.show(renderer=render)
         else:
-            fig.write_image(out_file)
+            if render == "object":
+                return fig
+            
+            else:
+                fig.write_image(out_file)
+
 
 
 # noinspection PyUnusedLocal
