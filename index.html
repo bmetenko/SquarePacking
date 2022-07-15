@@ -15,13 +15,33 @@
     <script type='text/javascript'>
       function plot(graph, chart) {
           var figure = JSON.parse(graph)
-          Plotly.newPlot(chart, figure, {});
+          var layout = {
+            autosize: true
+          };
+
+          Plotly.newPlot(chart, figure, layout);
+
+          function resP(id){
+            var d3 = Plotly.d3;
+
+            var parent_width = document.getElementById("chart1").parentElement.clientWidth
+            var gd3 = d3.select(document.getElementById(id))
+              .style({
+              width: parent_width - 10,
+              });
+            return gd3.node();
+          }
+
+          window.addEventListener('resize', function(){
+            Plotly.Plots.resize( resP(chart) );
+          })
+
           window.onresize = function() {
             Plotly.relayout(chart, {
             'xaxis.autorange': true,
             'yaxis.autorange': true
-              });
-            };
+            });
+          };
       }
       
     </script>
@@ -58,7 +78,7 @@ fig = B.generate_plotly(render="object")
 graphJSON = json.dumps(
   fig, 
   cls=plotly.utils.PlotlyJSONEncoder
-  )
+)
 js.plot(graphJSON,"chart1")
 
     </py-script>
