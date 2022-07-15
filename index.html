@@ -16,7 +16,14 @@
       function plot(graph, chart) {
           var figure = JSON.parse(graph)
           Plotly.newPlot(chart, figure, {});
+          window.onresize = function() {
+            Plotly.relayout(chart, {
+            'xaxis.autorange': true,
+            'yaxis.autorange': true
+              });
+            };
       }
+      
     </script>
 
   </head>
@@ -30,8 +37,10 @@
   - paths:
       - ./squares.py
 </py-env>
-<div id="chart1"></div>
+<div id="chart1" style="width: 100vw; height: 100vh;"></div>
 <py-script>
+import js
+import json
 import pandas as pd
 import numpy as np
 import plotly
@@ -39,27 +48,12 @@ import plotly.graph_objects as go
 import plotly.io as pio
 from squares import Square, SquareCanvas, check_bounds
 
-# pio.renderers.default = "svg"
-
-#####################################################################
-
 list_square_radii_1 = [3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1]
 list_squares_1 = [Square(radius) for radius in list_square_radii_1]
 
 B = SquareCanvas(max_bound=8, contents=list_squares_1)
 
-separator = "------------\n"
-print(f"{B.contents=}\n"
-f"{separator}{B.frame}\n"
-f"{separator}{B.y_list=}\n"
-f"{separator}{B.x_list=}\n"
-f"{separator}{B.center_list=}"
-f"{separator}")
-
 fig = B.generate_plotly(render="object")
-
-import js
-import json
 
 graphJSON = json.dumps(
   fig, 
