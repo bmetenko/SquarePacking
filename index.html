@@ -1,12 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="assets/pyscript.css" />
-    <script defer src="assets/pyscript.js"></script>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    <title>Square Packing Demo</title>
-</head>
-<body>
-    Test
-</body>
+    <title>PyScript Square Packing</title>
+
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+
+    <script type='text/javascript'>
+      function plot(graph, chart) {
+          var figure = JSON.parse(graph)
+          Plotly.newPlot(chart, figure, {});
+      }
+    </script>
+
+  </head>
+
+  <body>
+
+<py-env>
+  - pandas
+  - numpy
+  - plotly
+  - paths:
+      - ./squares.py
+</py-env>
+<div id="chart1"></div>
+<py-script>
+import pandas as pd
+import numpy as np
+import plotly
+import plotly.graph_objects as go
+import plotly.io as pio
+from squares import Square, SquareCanvas, check_bounds
+
+# pio.renderers.default = "svg"
+
+#####################################################################
+
+list_square_radii_1 = [3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1]
+list_squares_1 = [Square(radius) for radius in list_square_radii_1]
+
+B = SquareCanvas(max_bound=8, contents=list_squares_1)
+
+separator = "------------\n"
+print(f"{B.contents=}\n"
+f"{separator}{B.frame}\n"
+f"{separator}{B.y_list=}\n"
+f"{separator}{B.x_list=}\n"
+f"{separator}{B.center_list=}"
+f"{separator}")
+
+fig = B.generate_plotly(render="object")
+
+import js
+import json
+
+graphJSON = json.dumps(
+  fig, 
+  cls=plotly.utils.PlotlyJSONEncoder
+  )
+js.plot(graphJSON,"chart1")
+
+    </py-script>
+  </body>
 </html>
