@@ -11,6 +11,31 @@
 
     <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
     <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+    <style>
+      button {
+        color: black;
+        background-color: lightblue;
+        padding: 5px;
+        margin: 5px;
+        border-radius: 5px;
+      }
+      input {
+        margin: 5px;
+        border-color: aliceblue;
+        border: 2px;
+        border-style: solid;
+        padding: 2px;
+      }
+      input[type=number] {text-align: right;}
+      #controls {
+        background-color: rgb(178, 248, 238);
+        display: flex;
+        justify-content: center;
+      }
+      label {
+        align-self: center;
+      }
+    </style>
 
     <script type='text/javascript'>
       function plot(graph, chart) {
@@ -51,7 +76,40 @@
   - paths:
       - ./squares.py
 </py-env>
-<div id="top-row" style="display: flex; justify-content: center;">
+
+<div id="controls">
+  <button id="reset-canvas" style="background-color: pink;">
+    Reset Canvas
+  </button>
+  <label>
+    Canvas Size:
+  </label>
+  <input id="canvas-size" value="5"type="number" min="5", max="100">
+  </input>
+
+  <button id="canvas-size-update" type="button">
+    Update Canvas Size
+  </button>
+
+  <label>
+    Width:
+  </label>
+  <input id="width" value="1" type="number" min="1", max="10">
+  </input>
+
+  <label>
+    Length:
+  </label>
+  <input id="width" value="1" type="number" min="1", max="10">
+  </input>
+
+  <button id="add-rect" type="button">
+    Add Rectangle
+  </button>
+
+</div>
+
+<div id="chart-row" style="display: flex; justify-content: center;">
   <div id="chart-container" style="width: 75%;height: 50%;">
     <div id="chart1" style="width: 100%; height: 100%;"></div>
   </div>
@@ -81,5 +139,6 @@ graphJSON = json.dumps(
 js.plot(graphJSON,"chart1")
 
     </py-script>
+
   </body>
 </html>
