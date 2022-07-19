@@ -136,7 +136,22 @@ graphJSON = json.dumps(
   fig, 
   cls=plotly.utils.PlotlyJSONEncoder
 )
+
 js.plot(graphJSON,"chart1")
+
+sess = js.sessionStorage
+
+sess.setItem('chart1', graphJSON)
+
+reset_button = js.document.getElementById("reset-canvas")
+canvas_size = js.document.getElementById("canvas-size")
+canvas_update = js.document.getElementById("canvas-size-update")
+
+width = js.document.getElementById("width")
+height = js.document.getElementByID("height")
+
+add_rect = js.document.getElementByID("add-rect")
+
 
     </py-script>
 
