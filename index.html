@@ -115,6 +115,8 @@
   </div>
 </div>
 
+<div id="messages"></div>
+
 <py-script>
 import js
 import json
@@ -123,6 +125,8 @@ import numpy as np
 import plotly
 import plotly.graph_objects as go
 import plotly.io as pio
+from pyodide import create_proxy
+
 from squares import Square, SquareCanvas, check_bounds
 
 list_square_radii_1 = [3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1]
@@ -142,15 +146,80 @@ js.plot(graphJSON,"chart1")
 sess = js.sessionStorage
 
 sess.setItem('chart1', graphJSON)
+sess.setItem('chart-data', B.contents)
 
-reset_button = js.document.getElementById("reset-canvas")
 canvas_size = js.document.getElementById("canvas-size")
+reset_button = js.document.getElementById("reset-canvas")
+
+def reset_chart(a):
+    B = SquareCanvas(max_bound=int(canvas_size.value), contents=[])
+
+    fig = B.generate_plotly(render="object")
+
+    graphJSON = json.dumps(
+        fig, 
+        cls=plotly.utils.PlotlyJSONEncoder
+    )
+
+    js.plot(graphJSON,"chart1")
+    print(B.contents)
+
+reset_button.addEventListener("click", create_proxy(reset_chart))
+
+def update_chart_size(a):    
+    contents = sess.getItem('chart-data')[1:-1]
+    print(contents)
+
+    B = SquareCanvas(max_bound=int(canvas_size.value))
+
+    for sq_def in contents.split("],"):
+        import re
+        text = sq_def.split("::")[0]
+        text = text.replace("[", "").replace("]", "").replace(" ", "")
+        split_text = re.split(r'(?=\d)', text, 1)
+
+
+        if split_text[0] == "Square":
+            try:
+                B.add_contents(Square(side=int(split_text[1])))
+            
+            except IndexError:
+                js.document.getElementById("messages").innerText = "Couldn't place all..."
+                return
+
+        if split_text[0] == "Rect":
+            try:
+                lw = text.split("Rect")[1]
+                split_lw = lw.split("x")
+                B.add_contents(Rect(length=int(split_lw[0]), width=int(split_lw[1])))
+
+            except IndexError:
+                js.document.getElementById("messages").innerText = "Couldn't place all..."
+                return
+
+    fig = B.generate_plotly(render="object")
+
+    graphJSON = json.dumps(
+        fig, 
+        cls=plotly.utils.PlotlyJSONEncoder
+    )
+
+    js.plot(graphJSON,"chart1")
+    print(B.contents)
+
 canvas_update = js.document.getElementById("canvas-size-update")
+canvas_update.addEventListener("click", create_proxy(update_chart_size))
 
 width = js.document.getElementById("width")
-height = js.document.getElementByID("height")
+height = js.document.getElementById("height")
 
-add_rect = js.document.getElementByID("add-rect")
+add_rect = js.document.getElementById("add-rect")
+
+def add_rectangle(a):
+    pass
+
+
+add_rect.addEventListener("click", create_proxy(add_rectangle))
 
 
     </py-script>
