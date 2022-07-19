@@ -100,7 +100,7 @@
   <label>
     Length:
   </label>
-  <input id="width" value="1" type="number" min="1", max="10">
+  <input id="length" value="1" type="number" min="1", max="10">
   </input>
 
   <button id="add-rect" type="button">
@@ -127,7 +127,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 from pyodide import create_proxy
 
-from squares import Square, SquareCanvas, check_bounds
+from squares import Rect, Square, SquareCanvas, check_bounds
 
 list_square_radii_1 = [3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1]
 list_squares_1 = [Square(radius) for radius in list_square_radii_1]
@@ -162,13 +162,16 @@ def reset_chart(a):
     )
 
     js.plot(graphJSON,"chart1")
-    print(B.contents)
+
+    js.document.getElementById("messages").innerText = "Canvas reset."
+
+    sess.setItem('chart1', graphJSON)
+    sess.setItem('chart-data', B.contents)
 
 reset_button.addEventListener("click", create_proxy(reset_chart))
 
 def update_chart_size(a):    
     contents = sess.getItem('chart-data')[1:-1]
-    print(contents)
 
     B = SquareCanvas(max_bound=int(canvas_size.value))
 
@@ -205,18 +208,70 @@ def update_chart_size(a):
     )
 
     js.plot(graphJSON,"chart1")
-    print(B.contents)
+    
+    sess.setItem('chart1', graphJSON)
+    sess.setItem('chart-data', B.contents)
+
+    js.document.getElementById("messages").innerText = "Canvas updated."
 
 canvas_update = js.document.getElementById("canvas-size-update")
 canvas_update.addEventListener("click", create_proxy(update_chart_size))
 
 width = js.document.getElementById("width")
-height = js.document.getElementById("height")
+length = js.document.getElementById("length")
 
 add_rect = js.document.getElementById("add-rect")
 
 def add_rectangle(a):
-    pass
+    contents = sess.getItem('chart-data')[1:-1]
+
+    B = SquareCanvas(max_bound=int(canvas_size.value))
+
+    for sq_def in contents.split("],"):
+        import re
+        text = sq_def.split("::")[0]
+        text = text.replace("[", "").replace("]", "").replace(" ", "")
+        split_text = re.split(r'(?=\d)', text, 1)
+
+
+        if split_text[0] == "Square":
+            try:
+                B.add_contents(Square(side=int(split_text[1])))
+            
+            except IndexError:
+                js.document.getElementById("messages").innerText = "Couldn't place all..."
+                return
+
+        if split_text[0] == "Rect":
+            try:
+                lw = text.split("Rect")[1]
+                split_lw = lw.split("x")
+                B.add_contents(Rect(length=int(split_lw[0]), width=int(split_lw[1])))
+
+            except IndexError:
+                js.document.getElementById("messages").innerText = "Couldn't place all..."
+                return
+
+    try:
+        B.add_contents(Rect(length=int(length.value), width=int(width.value)))
+    
+    except IndexError:
+        js.document.getElementById("messages").innerText = "Couldn't add rectangle..."
+        return
+
+    fig = B.generate_plotly(render="object")
+
+    graphJSON = json.dumps(
+        fig, 
+        cls=plotly.utils.PlotlyJSONEncoder
+    )
+
+    js.plot(graphJSON,"chart1")
+    
+    sess.setItem('chart1', graphJSON)
+    sess.setItem('chart-data', B.contents)
+
+    js.document.getElementById("messages").innerText = "Canvas updated."
 
 
 add_rect.addEventListener("click", create_proxy(add_rectangle))
