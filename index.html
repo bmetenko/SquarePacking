@@ -84,7 +84,7 @@
   <label>
     Canvas Size:
   </label>
-  <input id="canvas-size" value="5"type="number" min="5", max="100">
+  <input id="canvas-size" value="9" type="number" min="5", max="100">
   </input>
 
   <button id="canvas-size-update" type="button">
@@ -109,13 +109,17 @@
 
 </div>
 
-<div id="chart-row" style="display: flex; justify-content: center;">
-  <div id="chart-container" style="width: 75%;height: 50%;">
-    <div id="chart1" style="width: 100%; height: 100%;"></div>
+<div style="display: flex; justify-content: center; height: 1.5em;">
+  <div id="messages" style="border: 2px black;">
+Welcome! Please modify bounds or reset to add rectangles.
   </div>
 </div>
 
-<div id="messages"></div>
+<div id="chart-row" style="display: flex; justify-content: center;">
+  <div id="chart-container" style="width: 75%; height: 50%;">
+    <div id="chart1" style="width: 100%; height: 100%;"></div>
+  </div>
+</div>
 
 <py-script>
 import js
