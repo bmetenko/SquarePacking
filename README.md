@@ -8,6 +8,8 @@ Main functionality of the code exemplified in the pySquares.ipynb.
 
 Maintenance or updates unclear since only a toy project.
 
+Live demo functionality POC available at https://bmetenko.github.io/SquarePacking/
+
 Please note that loading and processing of larger images will take time.
 
 Current command-line example:
