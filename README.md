@@ -90,6 +90,8 @@ Todo:
 - [x] rotatable property, rotate function (Rect-specific)
 - [x] CLI based preview of output
 - [x] auto-populate (min_start) (py-cli)
+- [x] PyScript web POC
+- [x] CSV and image file input/output
 - [ ] polish above implementations
 - [ ] (pixel) circle packing
 - [ ] verbose population of squares (debug)
