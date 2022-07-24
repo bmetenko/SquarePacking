@@ -116,7 +116,7 @@
   <label>
     Canvas Size:
   </label>
-  <input id="canvas-size" value="9" type="number" min="5", max="100">
+  <input id="canvas-size" value="8" type="number" min="5", max="100">
   </input>
 
   <button id="canvas-size-update" type="button">
@@ -139,7 +139,7 @@
     Add Rectangle
   </button>
 
-  <button id="center-toggle" type="button" disabled=true>
+  <button id="center-toggle" type="button">
     Toggle Coordinates
   </button>
 </div>
@@ -226,7 +226,7 @@ def update_chart_size(a):
                 B.add_contents(Square(side=int(split_text[1])))
             
             except IndexError:
-                js.document.getElementById("messages").innerText = "Couldn't place all..."
+                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
                 return
 
         if split_text[0] == "Rect":
@@ -236,7 +236,7 @@ def update_chart_size(a):
                 B.add_contents(Rect(length=int(split_lw[0]), width=int(split_lw[1])))
 
             except IndexError:
-                js.document.getElementById("messages").innerText = "Couldn't place all..."
+                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
                 return
 
     fig = B.generate_plotly(render="object")
@@ -278,7 +278,7 @@ def add_rectangle(a):
                 B.add_contents(Square(side=int(split_text[1])))
             
             except IndexError:
-                js.document.getElementById("messages").innerText = "Couldn't place all..."
+                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
                 return
 
         if split_text[0] == "Rect":
@@ -288,14 +288,14 @@ def add_rectangle(a):
                 B.add_contents(Rect(length=int(split_lw[0]), width=int(split_lw[1])))
 
             except IndexError:
-                js.document.getElementById("messages").innerText = "Couldn't place all..."
+                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
                 return
 
     try:
         B.add_contents(Rect(length=int(length.value), width=int(width.value)))
     
     except IndexError:
-        js.document.getElementById("messages").innerText = "Couldn't add rectangle..."
+        js.document.getElementById("messages").innerText = "Couldn't add rectangle... Expand Canvas?"
         return
 
     fig = B.generate_plotly(render="object")
@@ -315,6 +315,60 @@ def add_rectangle(a):
 
 add_rect.addEventListener("click", create_proxy(add_rectangle))
 
+toggle_coords = js.document.getElementById("center-toggle")
+
+sess.setItem('show_center_coordinates', 1)
+
+def toggle_coords_visibility(a):
+    contents = sess.getItem('chart-data')[1:-1]
+
+    B = SquareCanvas(max_bound=int(canvas_size.value))
+
+    for sq_def in contents.split("],"):
+        import re
+        text = sq_def.split("::")[0]
+        text = text.replace("[", "").replace("]", "").replace(" ", "")
+        split_text = re.split(r'(?=\d)', text, 1)
+
+
+        if split_text[0] == "Square":
+            try:
+                B.add_contents(Square(side=int(split_text[1])))
+            
+            except IndexError:
+                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
+                return
+
+        if split_text[0] == "Rect":
+            try:
+                lw = text.split("Rect")[1]
+                split_lw = lw.split("x")
+                B.add_contents(Rect(length=int(split_lw[0]), width=int(split_lw[1])))
+
+            except IndexError:
+                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
+                return
+
+    show_center = sess.getItem('show_center_coordinates')
+
+    sess.removeItem('show_center_coordinates')
+    sess.setItem('show_center_coordinates', '' if show_center == '1' else '1')
+
+    fig = B.generate_plotly(render="object", show_text=bool(sess.getItem('show_center_coordinates')))
+
+    graphJSON = json.dumps(
+        fig, 
+        cls=plotly.utils.PlotlyJSONEncoder
+    )
+
+    js.plot(graphJSON,"chart1")
+    
+    sess.setItem('chart1', graphJSON)
+    sess.setItem('chart-data', B.contents)
+
+    js.document.getElementById("messages").innerText = "Canvas updated."
+
+toggle_coords.addEventListener("click", create_proxy(toggle_coords_visibility))
 
     </py-script>
 
