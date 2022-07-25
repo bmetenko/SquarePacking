@@ -176,11 +176,11 @@ B = SquareCanvas(max_bound=8, contents=list_squares_1)
 fig = B.generate_plotly(render="object")
 
 graphJSON = json.dumps(
-  fig, 
-  cls=plotly.utils.PlotlyJSONEncoder
+    fig,
+    cls=plotly.utils.PlotlyJSONEncoder
 )
 
-js.plot(graphJSON,"chart1")
+js.plot(graphJSON, "chart1")
 
 sess = js.sessionStorage
 
@@ -190,26 +190,29 @@ sess.setItem('chart-data', B.contents)
 canvas_size = js.document.getElementById("canvas-size")
 reset_button = js.document.getElementById("reset-canvas")
 
-def reset_chart(a):
-    B = SquareCanvas(max_bound=int(canvas_size.value), contents=[])
 
-    fig = B.generate_plotly(render="object")
-
-    graphJSON = json.dumps(
-        fig, 
+def redraw_chart(canvas_var, message_out, show_text=True):
+    xfig = canvas_var.generate_plotly(render="object", show_text=show_text)
+    graph_json = json.dumps(
+        xfig,
         cls=plotly.utils.PlotlyJSONEncoder
     )
+    js.plot(graph_json, "chart1")
+    sess.setItem('chart1', graph_json)
+    sess.setItem('chart-data', canvas_var.contents)
+    js.document.getElementById("messages").innerText = message_out
 
-    js.plot(graphJSON,"chart1")
 
-    js.document.getElementById("messages").innerText = "Canvas reset."
+def reset_chart(a):
+    B = SquareCanvas(max_bound=int(canvas_size.value), contents=[])
+    message_out = "Canvas reset."
+    redraw_chart(B, message_out)
 
-    sess.setItem('chart1', graphJSON)
-    sess.setItem('chart-data', B.contents)
 
 reset_button.addEventListener("click", create_proxy(reset_chart))
 
-def update_chart_size(a):    
+
+def update_chart_size(a):
     contents = sess.getItem('chart-data')[1:-1]
 
     B = SquareCanvas(max_bound=int(canvas_size.value))
@@ -220,11 +223,10 @@ def update_chart_size(a):
         text = text.replace("[", "").replace("]", "").replace(" ", "")
         split_text = re.split(r'(?=\d)', text, 1)
 
-
         if split_text[0] == "Square":
             try:
                 B.add_contents(Square(side=int(split_text[1])))
-            
+
             except IndexError:
                 js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
                 return
@@ -239,19 +241,9 @@ def update_chart_size(a):
                 js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
                 return
 
-    fig = B.generate_plotly(render="object")
+    message_out = "Canvas updated."
+    redraw_chart(B, message_out)
 
-    graphJSON = json.dumps(
-        fig, 
-        cls=plotly.utils.PlotlyJSONEncoder
-    )
-
-    js.plot(graphJSON,"chart1")
-    
-    sess.setItem('chart1', graphJSON)
-    sess.setItem('chart-data', B.contents)
-
-    js.document.getElementById("messages").innerText = "Canvas updated."
 
 canvas_update = js.document.getElementById("canvas-size-update")
 canvas_update.addEventListener("click", create_proxy(update_chart_size))
@@ -260,6 +252,7 @@ width = js.document.getElementById("width")
 length = js.document.getElementById("length")
 
 add_rect = js.document.getElementById("add-rect")
+
 
 def add_rectangle(a):
     contents = sess.getItem('chart-data')[1:-1]
@@ -272,11 +265,10 @@ def add_rectangle(a):
         text = text.replace("[", "").replace("]", "").replace(" ", "")
         split_text = re.split(r'(?=\d)', text, 1)
 
-
         if split_text[0] == "Square":
             try:
                 B.add_contents(Square(side=int(split_text[1])))
-            
+
             except IndexError:
                 js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
                 return
@@ -293,24 +285,15 @@ def add_rectangle(a):
 
     try:
         B.add_contents(Rect(length=int(length.value), width=int(width.value)))
-    
+
     except IndexError:
         js.document.getElementById("messages").innerText = "Couldn't add rectangle... Expand Canvas?"
         return
 
-    fig = B.generate_plotly(render="object")
+    message_out = "Canvas updated."
+    redraw_chart(B, message_out)
 
-    graphJSON = json.dumps(
-        fig, 
-        cls=plotly.utils.PlotlyJSONEncoder
-    )
 
-    js.plot(graphJSON,"chart1")
-    
-    sess.setItem('chart1', graphJSON)
-    sess.setItem('chart-data', B.contents)
-
-    js.document.getElementById("messages").innerText = "Canvas updated."
 
 
 add_rect.addEventListener("click", create_proxy(add_rectangle))
@@ -318,6 +301,7 @@ add_rect.addEventListener("click", create_proxy(add_rectangle))
 toggle_coords = js.document.getElementById("center-toggle")
 
 sess.setItem('show_center_coordinates', 1)
+
 
 def toggle_coords_visibility(a):
     contents = sess.getItem('chart-data')[1:-1]
@@ -330,11 +314,10 @@ def toggle_coords_visibility(a):
         text = text.replace("[", "").replace("]", "").replace(" ", "")
         split_text = re.split(r'(?=\d)', text, 1)
 
-
         if split_text[0] == "Square":
             try:
                 B.add_contents(Square(side=int(split_text[1])))
-            
+
             except IndexError:
                 js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
                 return
@@ -354,19 +337,9 @@ def toggle_coords_visibility(a):
     sess.removeItem('show_center_coordinates')
     sess.setItem('show_center_coordinates', '' if show_center == '1' else '1')
 
-    fig = B.generate_plotly(render="object", show_text=bool(sess.getItem('show_center_coordinates')))
+    message_out = "Canvas updated."
+    redraw_chart(B, message_out, show_text=bool(sess.getItem('show_center_coordinates')))
 
-    graphJSON = json.dumps(
-        fig, 
-        cls=plotly.utils.PlotlyJSONEncoder
-    )
-
-    js.plot(graphJSON,"chart1")
-    
-    sess.setItem('chart1', graphJSON)
-    sess.setItem('chart-data', B.contents)
-
-    js.document.getElementById("messages").innerText = "Canvas updated."
 
 toggle_coords.addEventListener("click", create_proxy(toggle_coords_visibility))
 

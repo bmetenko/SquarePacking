@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#----------------
+# ----------------
 # Created By : bmetenko
 # Start Date : 22May2022
 # Project URL: https://github.com/bmetenko/SquarePacking
@@ -16,6 +16,7 @@ from typing import List, Dict, Optional, Union
 import pandas as pd
 import numpy as np
 
+
 class Square:
     __slots__ = (
         '_center', '_area', "side", 
@@ -25,9 +26,12 @@ class Square:
 
     def __init__(
         self, 
-        side: int, 
-        extra: Dict = {}
-        ):
+        side: int,
+        extra=None
+    ):
+        if extra is None:
+            extra = {}
+
         self._center = None
         self._area = None
         self.side = float(side)
@@ -94,9 +98,12 @@ class Rect:
     def __init__(
         self, 
         length: int, 
-        width: int, 
-        extra = {}
-        ):
+        width: int,
+        extra=None
+    ):
+
+        if extra is None:
+            extra = {}
 
         self._area = None
         self._center = None
@@ -109,7 +116,6 @@ class Rect:
         self.rotate_times = 4
 
         self.extra = extra
-
 
     def __repr__(self):
         return f"Rect{int(self.length)}x{int(self.width)}::ctr@{self.center}"
@@ -338,7 +344,7 @@ class SquareCanvas:
         return [i.center[1] for i in self.contents]
 
     @property
-    def center_list(self) -> List[List]:
+    def center_list(self) -> List[str]:
         return [str(i.center) for i in self.contents]
 
     @property
@@ -352,7 +358,7 @@ class SquareCanvas:
         render: str = "svg",
         out_file: str = None,
         trace_path: bool = False
-            ) -> None:
+            ):
         
         import plotly
         import plotly.graph_objects as go
@@ -420,7 +426,7 @@ class SquareCanvas:
         )
         
         if out_file is None \
-            and render != "object":
+                and render != "object":
             if render == "browser":
                 fig.update_layout(autosize=True)
             else:
@@ -436,7 +442,6 @@ class SquareCanvas:
             
             else:
                 fig.write_image(out_file)
-
 
 
 # noinspection PyUnusedLocal
