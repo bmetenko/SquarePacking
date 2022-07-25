@@ -156,7 +156,11 @@ Welcome! Please modify bounds or reset to add rectangles.
   </div>
 </div>
 
-<py-script>
+<div id="coordinates-message">
+  
+</div>
+
+<py-script output="coordinates-message">
 import js
 import json
 import pandas as pd
@@ -201,6 +205,7 @@ def redraw_chart(canvas_var, message_out, show_text=True):
     sess.setItem('chart1', graph_json)
     sess.setItem('chart-data', canvas_var.contents)
     js.document.getElementById("messages").innerText = message_out
+    js.document.getElementById("coordinates-message").innerText = canvas_var.contents
 
 
 def reset_chart(a):
@@ -343,6 +348,7 @@ def toggle_coords_visibility(a):
 
 toggle_coords.addEventListener("click", create_proxy(toggle_coords_visibility))
 
+# B.contents
     </py-script>
 
   </body>
