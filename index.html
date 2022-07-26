@@ -156,8 +156,9 @@ Welcome! Please modify bounds or reset to add rectangles.
   </div>
 </div>
 
+<div id="frame-container">
 <div id="coordinates-message">
-  
+</div>
 </div>
 
 <py-script output="coordinates-message">
@@ -205,7 +206,7 @@ def redraw_chart(canvas_var, message_out, show_text=True):
     sess.setItem('chart1', graph_json)
     sess.setItem('chart-data', canvas_var.contents)
     js.document.getElementById("messages").innerText = message_out
-    js.document.getElementById("coordinates-message").innerText = canvas_var.contents
+    js.document.getElementById("coordinates-message").innerHTML += canvas_var.contents_frame().to_html()
 
 
 def reset_chart(a):
