@@ -65,6 +65,15 @@
         border-radius: 20px;
         padding: 2px 15px 10px;
       }
+      #frame-container{
+        display: flex; 
+        justify-content: center;
+        overflow: auto;
+        // border: 2px black; 
+        // border-style: dashed;
+        align-items: center;
+        margin: 5px;
+      }
     </style>
 
     <script type='text/javascript'>
@@ -105,6 +114,7 @@
   - pandas
   - numpy
   - plotly
+  - jinja2
   - paths:
       - ./squares.py
 </py-env>
@@ -173,6 +183,8 @@ from pyodide import create_proxy
 
 from squares import Rect, Square, SquareCanvas, check_bounds
 
+pd.set_option("display.precision", 4)
+
 list_square_radii_1 = [3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1]
 list_squares_1 = [Square(radius) for radius in list_square_radii_1]
 
@@ -206,7 +218,20 @@ def redraw_chart(canvas_var, message_out, show_text=True):
     sess.setItem('chart1', graph_json)
     sess.setItem('chart-data', canvas_var.contents)
     js.document.getElementById("messages").innerText = message_out
-    js.document.getElementById("coordinates-message").innerHTML += canvas_var.contents_frame().to_html()
+
+    df = canvas_var.contents_frame()
+    total = df.apply(np.sum)
+    total[df.columns[0]] = 'totals'
+    df = df.append(pd.DataFrame(total.values, index=total.keys()).T, ignore_index=True)
+
+    df = df.style
+    df = df.set_table_styles([
+    {'selector': 'th.col_heading', 'props': 'text-align: center;'},
+    {'selector': 'th.col_heading.level0', 'props': 'font-size: 1.5em;'},
+    {'selector': 'td', 'props': 'text-align: center; font-weight: bold;'},
+      ], overwrite=False)
+
+    js.document.getElementById("coordinates-message").innerHTML = df.to_html()
 
 
 def reset_chart(a):
