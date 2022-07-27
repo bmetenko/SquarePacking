@@ -208,6 +208,10 @@ canvas_size = js.document.getElementById("canvas-size")
 reset_button = js.document.getElementById("reset-canvas")
 
 
+def inner_text_update(tag_id, value):
+    js.document.getElementById(tag_id).innerText = str(value)
+
+
 def redraw_chart(canvas_var, message_out, show_text=True):
     xfig = canvas_var.generate_plotly(render="object", show_text=show_text)
     graph_json = json.dumps(
@@ -217,7 +221,8 @@ def redraw_chart(canvas_var, message_out, show_text=True):
     js.plot(graph_json, "chart1")
     sess.setItem('chart1', graph_json)
     sess.setItem('chart-data', canvas_var.contents)
-    js.document.getElementById("messages").innerText = message_out
+
+    inner_text_update(tag_id='messages', value=message_out)
 
     df = canvas_var.contents_frame()
     total = df.apply(np.sum)
@@ -226,10 +231,10 @@ def redraw_chart(canvas_var, message_out, show_text=True):
 
     df = df.style
     df = df.set_table_styles([
-    {'selector': 'th.col_heading', 'props': 'text-align: center;'},
-    {'selector': 'th.col_heading.level0', 'props': 'font-size: 1.5em;'},
-    {'selector': 'td', 'props': 'text-align: center; font-weight: bold;'},
-      ], overwrite=False)
+        {'selector': 'th.col_heading', 'props': 'text-align: center;'},
+        {'selector': 'th.col_heading.level0', 'props': 'font-size: 1.5em;'},
+        {'selector': 'td', 'props': 'text-align: center; font-weight: bold;'},
+    ], overwrite=False)
 
     js.document.getElementById("coordinates-message").innerHTML = df.to_html()
 
@@ -259,7 +264,7 @@ def update_chart_size(a):
                 B.add_contents(Square(side=int(split_text[1])))
 
             except IndexError:
-                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
+                inner_text_update("messages", "Couldn't place all... Expand canvas?")
                 return
 
         if split_text[0] == "Rect":
@@ -269,7 +274,7 @@ def update_chart_size(a):
                 B.add_contents(Rect(length=int(split_lw[0]), width=int(split_lw[1])))
 
             except IndexError:
-                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
+                inner_text_update("messages", "Couldn't place all... Expand canvas?")
                 return
 
     message_out = "Canvas updated."
@@ -301,7 +306,7 @@ def add_rectangle(a):
                 B.add_contents(Square(side=int(split_text[1])))
 
             except IndexError:
-                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
+                inner_text_update("messages", "Couldn't place all... Expand canvas?")
                 return
 
         if split_text[0] == "Rect":
@@ -311,20 +316,18 @@ def add_rectangle(a):
                 B.add_contents(Rect(length=int(split_lw[0]), width=int(split_lw[1])))
 
             except IndexError:
-                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
+                inner_text_update("messages", "Couldn't place all... Expand canvas?")
                 return
 
     try:
         B.add_contents(Rect(length=int(length.value), width=int(width.value)))
 
     except IndexError:
-        js.document.getElementById("messages").innerText = "Couldn't add rectangle... Expand Canvas?"
+        inner_text_update("messages", "Couldn't place rectangle... Expand canvas?")
         return
 
     message_out = "Canvas updated."
     redraw_chart(B, message_out)
-
-
 
 
 add_rect.addEventListener("click", create_proxy(add_rectangle))
@@ -350,7 +353,7 @@ def toggle_coords_visibility(a):
                 B.add_contents(Square(side=int(split_text[1])))
 
             except IndexError:
-                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
+                inner_text_update("messages", "Couldn't place all... Expand canvas?")
                 return
 
         if split_text[0] == "Rect":
@@ -360,7 +363,7 @@ def toggle_coords_visibility(a):
                 B.add_contents(Rect(length=int(split_lw[0]), width=int(split_lw[1])))
 
             except IndexError:
-                js.document.getElementById("messages").innerText = "Couldn't place all... Expand canvas?"
+                inner_text_update("messages", "Couldn't place all... Expand canvas?")
                 return
 
     show_center = sess.getItem('show_center_coordinates')
