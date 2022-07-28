@@ -225,11 +225,14 @@ def redraw_chart(canvas_var, message_out, show_text=True):
     inner_text_update(tag_id='messages', value=message_out)
 
     df = canvas_var.contents_frame()
+    df[['center_x','center_y']] = df.center.str.replace("[","").str.replace("]","").str.split(", ", expand=True).astype(float)
+    df.drop(columns=["center"], inplace=True)
+
     total = df.apply(np.sum)
     total[df.columns[0]] = 'totals'
     df = df.append(pd.DataFrame(total.values, index=total.keys()).T, ignore_index=True)
 
-    df = df.style
+    df = df.style    
     df = df.set_table_styles([
         {'selector': 'th.col_heading', 'props': 'text-align: center;'},
         {'selector': 'th.col_heading.level0', 'props': 'font-size: 1.5em;'},
@@ -240,9 +243,10 @@ def redraw_chart(canvas_var, message_out, show_text=True):
 
 
 def reset_chart(a):
-    B = SquareCanvas(max_bound=int(canvas_size.value), contents=[])
-    message_out = "Canvas reset."
-    redraw_chart(B, message_out)
+    redraw_chart(
+        SquareCanvas(max_bound=int(canvas_size.value)), 
+        "Canvas reset."
+    )
 
 
 reset_button.addEventListener("click", create_proxy(reset_chart))
