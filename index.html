@@ -86,6 +86,22 @@
         border-width: thick;
         corner-radius: 5px;
       }
+      table thead tr {
+        background-color: #009879;
+        color: #ffffff;
+        text-align: left;
+      }
+      table tbody tr {
+        border-bottom: 1px solid #dddddd;
+      }
+
+      table tbody tr:nth-of-type(even) {
+          background-color: #f3f3f3;
+      }
+
+      table tbody tr:last-of-type {
+          border-bottom: 2px solid #009879;
+      }
     </style>
 
     <script type='text/javascript'>
@@ -127,6 +143,7 @@
   - numpy
   - plotly
   - jinja2
+  - seaborn
   - paths:
       - ./squares.py
 </py-env>
@@ -186,6 +203,7 @@ import json
 import pandas as pd
 import numpy as np
 import plotly
+import seaborn as sns
 import plotly.graph_objects as go
 import plotly.io as pio
 from pyodide import create_proxy
@@ -193,6 +211,7 @@ from pyodide import create_proxy
 from squares import Rect, Square, SquareCanvas, check_bounds
 
 pd.set_option("display.precision", 4)
+cm = sns.color_palette("light:b", as_cmap=True)
 
 list_square_radii_1 = [3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1]
 list_squares_1 = [Square(radius) for radius in list_square_radii_1]
@@ -248,7 +267,9 @@ def redraw_chart(canvas_var, message_out, show_text=True):
         {'selector': 'td', 'props': 'text-align: center; font-weight: bold;'},
     ], overwrite=False)
 
-    js.document.getElementById("coordinates-message").innerHTML = df.to_html()
+    df = df.background_gradient(cmap=cm)
+
+    js.document.getElementById("coordinates-message").innerHTML = df.render(doctype_html=True)
 
 
 def reset_chart(a):
