@@ -2,6 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon/build/global/luxon.min.js">
+    </script><script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.4.2.min.js">
+    </script><script src="https://cdn.bokeh.org/bokeh/release/bokeh-gl-2.4.2.min.js">
+    </script><script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.4.2.min.js">
+    </script><script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.4.2.min.js">
+    </script><script src="https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-2.4.2.min.js">
+    </script><script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="https://unpkg.com/@holoviz/panel@0.14.0-a.4/dist/panel.min.js"></script>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 
     <title>PyScript Square Packing</title>
@@ -144,10 +153,12 @@
   - plotly
   - jinja2
   - seaborn
+  - panel
   - paths:
       - ./squares.py
 </py-env>
-
+<div id="test">
+</div>
 <div id="controls">
   <button id="reset-canvas" style="background-color: pink;">
     Reset Canvas
@@ -239,6 +250,16 @@ reset_button = js.document.getElementById("reset-canvas")
 def inner_text_update(tag_id, value):
     js.document.getElementById(tag_id).innerText = str(value)
 
+def panel_df(df):
+    import panel as pn
+    pn.extension('tabulator', css_files=[pn.io.resources.CSS_URLS['font-awesome']])
+
+    pn.extension()
+    df_widget = pn.widgets.Tabulator(df)
+    
+    pn.Row(
+            df_widget,
+    ).servable(target='coordinates-message')
 
 def redraw_chart(canvas_var, message_out, show_text=True):
     xfig = canvas_var.generate_plotly(render="object", show_text=show_text)
@@ -269,7 +290,8 @@ def redraw_chart(canvas_var, message_out, show_text=True):
 
     df = df.background_gradient(cmap=cm)
 
-    js.document.getElementById("coordinates-message").innerHTML = df.render(doctype_html=True)
+    # js.document.getElementById("coordinates-message").innerHTML = df.render(doctype_html=True)
+    panel_df(df)
 
 
 def reset_chart(a):
@@ -410,7 +432,6 @@ def toggle_coords_visibility(a):
 
 
 toggle_coords.addEventListener("click", create_proxy(toggle_coords_visibility))
-
 # B.contents
     </py-script>
 
