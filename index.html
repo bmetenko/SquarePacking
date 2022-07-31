@@ -239,11 +239,26 @@ def panel_df(df):
     pn.extension('tabulator', css_files=[pn.io.resources.CSS_URLS['font-awesome']])
 
     pn.extension()
-    df_widget = pn.widgets.Tabulator(df)
+    df_widget = pn.widgets.Tabulator(
+        df, 
+        # group_by=['area'],  # Missing JS? 
+        pagination='local', 
+        page_size=10
+        )
+
+    df_widget.style.apply(highlight_max)
+    
     js.document.getElementById('coordinates-message').innerHTML = ''
     pn.Row(
             df_widget,
     ).servable(target='coordinates-message')
+
+def highlight_max(s):
+    '''
+    highlight the maximum in a Series yellow.
+    '''
+    is_max = s == s.max()
+    return ['background-color: yellow' if v else '' for v in is_max]
 
 def redraw_chart(canvas_var, message_out, show_text=True):
     xfig = canvas_var.generate_plotly(render="object", show_text=show_text)
