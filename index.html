@@ -237,16 +237,23 @@ def inner_text_update(tag_id, value):
 def panel_df(df):
     import panel as pn
     pn.extension('tabulator', css_files=[pn.io.resources.CSS_URLS['font-awesome']])
+    if isinstance(df, pd.io.formats.style.Styler):
+      style = df
+      df = df.data
+    else:
+      style = df.style
 
     pn.extension()
+    df = style.format(
+      {i: "{:.,1f}".format for i in df.columns.to_list()}
+    )
+    df.apply(highlight_max)
     df_widget = pn.widgets.Tabulator(
         df, 
         # group_by=['area'],  # Missing JS? 
         pagination='local', 
         page_size=10
         )
-
-    df_widget.style.apply(highlight_max)
     
     js.document.getElementById('coordinates-message').innerHTML = ''
     pn.Row(
