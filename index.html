@@ -234,38 +234,41 @@ reset_button = js.document.getElementById("reset-canvas")
 def inner_text_update(tag_id, value):
     js.document.getElementById(tag_id).innerText = str(value)
 
+
 def panel_df(df):
     import panel as pn
     pn.extension('tabulator', css_files=[pn.io.resources.CSS_URLS['font-awesome']])
     if isinstance(df, pd.io.formats.style.Styler):
-      style = df
-      df = df.data
+        style = df
+        df = df.data
     else:
-      style = df.style
+        style = df.style
 
     pn.extension()
     df = style.format(
-      {i: "{:.,1f}".format for i in df.columns.to_list()}
+        {i: "{:.,1f}".format for i in df.columns.to_list()}
     )
     df.apply(highlight_max)
     df_widget = pn.widgets.Tabulator(
-        df, 
-        # group_by=['area'],  # Missing JS? 
-        pagination='local', 
+        df,
+        # group_by=['area'],  # Missing JS?
+        pagination='local',
         page_size=10
-        )
-    
+    )
+
     js.document.getElementById('coordinates-message').innerHTML = ''
     pn.Row(
-            df_widget,
+        df_widget,
     ).servable(target='coordinates-message')
 
+
 def highlight_max(s):
-    '''
+    """
     highlight the maximum in a Series yellow.
-    '''
+    """
     is_max = s == s.max()
     return ['background-color: yellow' if v else '' for v in is_max]
+
 
 def redraw_chart(canvas_var, message_out, show_text=True):
     xfig = canvas_var.generate_plotly(render="object", show_text=show_text)
@@ -280,14 +283,22 @@ def redraw_chart(canvas_var, message_out, show_text=True):
     inner_text_update(tag_id='messages', value=message_out)
 
     df = canvas_var.contents_frame()
-    df[['center_x','center_y']] = df.center.str.replace("[","").str.replace("]","").str.split(", ", expand=True).astype(float)
+    df[['center_x', 'center_y']] = \
+        df.center.str.replace(
+            "[", ""
+        ).str.replace(
+            "]", ""
+        ).str.split(", ", expand=True).astype(
+            float
+        )
+
     df.drop(columns=["center"], inplace=True)
 
     total = df.apply(np.sum)
     total[df.columns[0]] = 'totals'
     df = df.append(pd.DataFrame(total.values, index=total.keys()).T, ignore_index=True)
 
-    df = df.style    
+    df = df.style
     df = df.set_table_styles([
         {'selector': 'th.col_heading', 'props': 'text-align: center;'},
         {'selector': 'th.col_heading.level0', 'props': 'font-size: 1.5em;'},
@@ -295,14 +306,12 @@ def redraw_chart(canvas_var, message_out, show_text=True):
     ], overwrite=False)
 
     df = df.background_gradient(cmap=cm)
-
-    # js.document.getElementById("coordinates-message").innerHTML = df.render(doctype_html=True)
     panel_df(df)
 
 
 def reset_chart(a):
     redraw_chart(
-        SquareCanvas(max_bound=int(canvas_size.value)), 
+        SquareCanvas(max_bound=int(canvas_size.value)),
         "Canvas reset."
     )
 
@@ -438,8 +447,8 @@ def toggle_coords_visibility(a):
 
 
 toggle_coords.addEventListener("click", create_proxy(toggle_coords_visibility))
-# B.contents
-    </py-script>
+
+</py-script>
 
   </body>
 </html>
