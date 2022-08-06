@@ -12,6 +12,7 @@ packing squares or rectangles on a square canvas.
 """
 
 from itertools import cycle
+from optparse import Option
 from typing import List, Dict, Optional, Union
 import pandas as pd
 import numpy as np
@@ -27,7 +28,7 @@ class Square:
     def __init__(
         self, 
         side: int,
-        extra=None
+        extra: Optional[Dict[str, Union[int, str]]] = None
     ):
         if extra is None:
             extra = {}
@@ -99,7 +100,7 @@ class Rect:
         self, 
         length: int, 
         width: int,
-        extra=None
+        extra: Optional[Dict[str, Union[int, str]]] = None
     ):
 
         if extra is None:
@@ -186,7 +187,7 @@ class SquareCanvas:
     def __init__(
             self,
             max_bound: int = None,
-            contents: List[Union[Square, Rect]] = None,
+            contents: Optional[List[Union[Square, Rect]]] = None,
             frame_override: np.ndarray = None,
             validate: bool = True,
             allow_rotation: bool = True
@@ -235,7 +236,7 @@ class SquareCanvas:
                         if y + width > self.y_max or y + width < 0:
                             continue
 
-                        fit = check_bounds(sq, self.frame, x, y, length, width)
+                        fit = check_bounds(self.frame, x, y, length, width)
 
                         if not fit:
                             continue
@@ -446,7 +447,6 @@ class SquareCanvas:
 
 # noinspection PyUnusedLocal
 def check_bounds(
-        sq: Square,
         frame: np.array,
         x: float,
         y: float,
