@@ -100,6 +100,11 @@ parser.add_argument(
     help="Specify csv to populate with the specified information about plot."
 )
 
+parser.add_argument(
+    "-ox", "--output_xlsx", dest='output_xlsx', default=None,
+    help="Specify xlsx to populate with the specified information about plot." 
+)
+
 def count_expand(
     expand_dict: List[Dict[str, int]]
     ) -> List[Dict[str, int]]:
@@ -259,6 +264,9 @@ def main():
 
         if bool(args.output_csv):
             canvas.contents_frame().to_csv(args.output_csv, index=False)
+        
+        if bool(args.output_xlsx):
+            canvas.contents_frame().to_csv(args.output_xlsx, index=False)
 
 
 if __name__ == "__main__":
