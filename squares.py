@@ -352,6 +352,20 @@ class SquareCanvas:
     def contents(self):
         return self._contents
 
+    def remove(self, lw_tuple):
+        removed=False
+        contents = self.contents.copy()
+        for idx, elem in enumerate(contents):
+            if not removed:
+                if elem.length == lw_tuple[0] \
+                    and elem.width == lw_tuple[1]:
+                    contents.remove(elem)
+                    removed=True
+
+        self._contents = contents
+
+        return self
+
     def generate_plotly(
         self, 
         show_text: bool = True,
