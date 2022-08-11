@@ -355,7 +355,9 @@ class SquareCanvas:
     def remove(
         self, 
         lw_tuple=None, 
-        element: Optional[Union[Square, Rect]]=None):
+        element: Optional[Union[Square, Rect]]=None,
+        silent_fail: bool=True
+        ):
         if lw_tuple is None and element is None:
             raise \
                 KeyError(
@@ -385,6 +387,11 @@ class SquareCanvas:
                             and elem.width == lw_tuple[1]:
                             contents.remove(elem)
                             removed=True
+
+                if not removed and not silent_fail:
+                    raise IndexError(
+                        f"Could not remove element with (l,w) of {lw_tuple}"
+                        )
                             
             # TODO: can fail silently, add toggle.
 
