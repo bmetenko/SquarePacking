@@ -352,29 +352,41 @@ class SquareCanvas:
     def contents(self):
         return self._contents
 
-    def remove(self, lw_tuple=None, element: Optional[Union[Square, Rect]]=None):
+    def remove(
+        self, 
+        lw_tuple=None, 
+        element: Optional[Union[Square, Rect]]=None):
         if lw_tuple is None and element is None:
             raise \
                 KeyError(
                     "Nothing specified to remove from Square Canvas. "
-                    "Please pass in a length width tuple or Square|Rect element."
+                    "Please pass in a length width tuple or Square|Rect "
+                    "element or lists of the specified."
                 )
 
         if lw_tuple is not None \
             or element is not None:
 
+            lw_list = lw_tuple
+
             if lw_tuple is None \
                 and element is not None:
-                lw_tuple = (element.length, element.width)
+                if isinstance(element, list):
+                    lw_list = [(el.length, el.width) for el in element]
+                else:
+                    lw_list = [(element.length, element.width)]
 
-            removed=False
             contents = self.contents.copy()
-            for elem in contents:
-                if not removed:
-                    if elem.length == lw_tuple[0] \
-                        and elem.width == lw_tuple[1]:
-                        contents.remove(elem)
-                        removed=True
+            for lw_tuple in lw_list:
+                removed=False
+                for elem in contents:
+                    if not removed:
+                        if elem.length == lw_tuple[0] \
+                            and elem.width == lw_tuple[1]:
+                            contents.remove(elem)
+                            removed=True
+                            
+            # TODO: can fail silently, add toggle.
 
             self._contents = contents
 
