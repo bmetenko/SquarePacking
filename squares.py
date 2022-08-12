@@ -355,8 +355,8 @@ class SquareCanvas:
     def remove(
         self, 
         lw_tuple: Optional[Union[Tuple[int], List[Tuple[int]]]] = None, 
-        element: Optional[Union[Union[Square, Rect], List[Union[Square, Rect]]]]=None,
-        silent_fail: bool=True
+        element: Optional[Union[Union[Square, Rect], List[Union[Square, Rect]]]] = None,
+        silent_fail: bool = True
         ):
         if lw_tuple is None and element is None:
             raise \
