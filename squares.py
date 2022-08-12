@@ -13,7 +13,7 @@ packing squares or rectangles on a square canvas.
 
 from itertools import cycle
 from optparse import Option
-from typing import List, Dict, Optional, Union
+from typing import List, Dict, Optional, Tuple, Union
 import pandas as pd
 import numpy as np
 
@@ -354,8 +354,8 @@ class SquareCanvas:
 
     def remove(
         self, 
-        lw_tuple=None, 
-        element: Optional[Union[Square, Rect]]=None,
+        lw_tuple: Optional[Union[Tuple[int], List[Tuple[int]]]] = None, 
+        element: Optional[Union[Union[Square, Rect], List[Union[Square, Rect]]]]=None,
         silent_fail: bool=True
         ):
         if lw_tuple is None and element is None:
