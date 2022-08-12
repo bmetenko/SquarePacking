@@ -17,6 +17,9 @@ from typing import List, Dict, Optional, Tuple, Union
 import pandas as pd
 import numpy as np
 
+ITuple = Tuple[int]
+OptITupleOrList = Optional[Union[ITuple, List[ITuple]]]
+
 
 class Square:
     __slots__ = (
@@ -182,12 +185,16 @@ class Rect:
         return self
 
 
+SqOrRect = Union[Square, Rect]
+OptSqOrRectOrList = Optional[Union[SqOrRect, List[SqOrRect]]]
+
+
 class SquareCanvas:
 
     def __init__(
             self,
             max_bound: int = None,
-            contents: Optional[List[Union[Square, Rect]]] = None,
+            contents: Optional[List[SqOrRect]] = None,
             frame_override: np.ndarray = None,
             validate: bool = True,
             allow_rotation: bool = True
@@ -219,7 +226,7 @@ class SquareCanvas:
         if validate:
             self.check_all_filled(contents)
 
-    def add_contents(self, sq: Union[Square, Rect]):
+    def add_contents(self, sq: SqOrRect):
         placed = False
         max_rotate = sq.rotate_times if self.rotation else 1
         for rot in list(range(0, max_rotate)):
@@ -329,7 +336,7 @@ class SquareCanvas:
 
         return self
 
-    def check_all_filled(self, contents: List[Union[Square, Rect]]) -> None:
+    def check_all_filled(self, contents: List[SqOrRect]) -> None:
         max_frame = np.amax(self.frame)
         max_contents = int(len(contents))
         if max_frame != max_contents:
@@ -354,10 +361,10 @@ class SquareCanvas:
 
     def remove(
         self, 
-        lw_tuple: Optional[Union[Tuple[int], List[Tuple[int]]]] = None, 
-        element: Optional[Union[Union[Square, Rect], List[Union[Square, Rect]]]] = None,
+        lw_tuple: OptITupleOrList = None,
+        element: OptSqOrRectOrList = None,
         silent_fail: bool = True
-        ):
+            ):
         if lw_tuple is None and element is None:
             raise \
                 KeyError(
@@ -367,12 +374,12 @@ class SquareCanvas:
                 )
 
         if lw_tuple is not None \
-            or element is not None:
+                or element is not None:
 
             lw_list = lw_tuple
 
             if lw_tuple is None \
-                and element is not None:
+                    and element is not None:
                 if isinstance(element, list):
                     lw_list = [(el.length, el.width) for el in element]
                 else:
@@ -380,13 +387,13 @@ class SquareCanvas:
 
             contents = self.contents.copy()
             for lw_tuple in lw_list:
-                removed=False
+                removed = False
                 for elem in contents:
                     if not removed:
                         if elem.length == lw_tuple[0] \
-                            and elem.width == lw_tuple[1]:
+                                and elem.width == lw_tuple[1]:
                             contents.remove(elem)
-                            removed=True
+                            removed = True
 
                 if not removed and not silent_fail:
                     raise IndexError(
