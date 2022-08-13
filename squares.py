@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ----------------
-# Created By : bmetenko
-# Start Date : 22May2022
-# Project URL: https://github.com/bmetenko/SquarePacking
+# Created By       : bmetenko
+# Start Date       : 22May2022
+# Project URL      : https://github.com/bmetenko/SquarePacking
+# Project Demo URL : https://bmetenko.github.io/SquarePacking/
 # ---------------
 
 """
@@ -399,8 +400,6 @@ class SquareCanvas:
                     raise IndexError(
                         f"Could not remove element with (l,w) of {lw_tuple}"
                         )
-                            
-            # TODO: can fail silently, add toggle.
 
             self._contents = contents
 
